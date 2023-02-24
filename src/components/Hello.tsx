@@ -1,8 +1,10 @@
 function Hello(){
 
-  return <div>
-    Hello
-  </div>
+  return <section className="hello">
+    <article>
+      Hello
+    </article>
+  </section>
 }
 
 export default Hello

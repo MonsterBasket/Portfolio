@@ -1,7 +1,10 @@
 function Projects(){
-  return <div>
+  return <section className="projects">
+    <article>
+      Projects
+    </article>
 
-  </div>
+  </section>
 }
 
 export default Projects;

@@ -1,7 +1,9 @@
 function Contact(){
-  return <div>
-
-  </div>
+  return <section className="contact">
+    <article>
+      Contact
+    </article>
+  </section>
 }
 
 export default Contact;

@@ -1,3 +1,37 @@
 .App {
   text-align: center;
 }
+#menu{
+  position: fixed;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 5px;
+}
+.menuButton{
+  width: 100px;
+  border: solid 1px black;
+  height: 30px;
+  line-height: 30px;
+  padding: 0px;
+}
+section{
+  width: 90%;
+  height: 300vh;
+  padding: 5%;
+}
+article{
+  position: sticky;
+  top: 5vh;
+}
+.about{
+  background-color: red;
+}
+.hello{
+  background-color: green;
+}
+.projects{
+  background-color: blue;
+}
+.contact{
+  background-color: orange;
+}
