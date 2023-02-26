@@ -1,9 +1,35 @@
+import { useScrollPosition } from "@n8tb1t/use-scroll-position"
+import { useState } from "react"
+
 function Hello(){
 
+  const [rotate, setRotate] = useState<number>(0)
+
+  useScrollPosition(({ prevPos, currPos }) => {
+    if (currPos.y === 0) setRotate(0)
+    else if (currPos.y < -500) setRotate(1)
+    else setRotate(currPos.y / -500)
+    console.log(rotate)
+  })
+
+  const frontRight = { transform: `rotateX(${-rotate * 180}deg) translateZ(50px)`, filter: `brightness(${2 * -rotate + 1})` };
+  const bottomRight = { transform: `rotateX(${-rotate * 180 + 90}deg) translateZ(50px)`, filter: `brightness(${2 * -rotate + 2})` };
+  const backRight = { transform: `rotateX(${-rotate * 180 - 180}deg) translateZ(50px)`, filter: `brightness(${2 * -rotate + 3})` };
+  const front = { transform: `rotateX(${rotate * 180}deg) translateZ(50px)`, filter: `brightness(${2 * rotate + 1})` };
+  const bottom = { transform: `rotateX(${rotate * 180 - 90}deg) translateZ(50px)`, filter: `brightness(${2 * rotate})` };
+  const back = { transform: `rotateX(${rotate * 180 - 180}deg) translateZ(50px)`, filter: `brightness(${2 * rotate - 1})` };
+
   return <section className="hello">
-    <article>
-      Hello
-    </article>
+      <div className="helloSpinLeft">
+        <div style={front} className='helloSpinPanel'> </div>
+        <div style={bottom} className='helloSpinPanel'>I am&#8202;</div>
+        <div style={back} className='helloSpinPanel'>I'm a&#8202;</div>
+      </div>
+      <div className="helloSpin">
+        <div style={frontRight} className='helloSpinPanel'>&#8202;Hello</div>
+        <div style={bottomRight} className='helloSpinPanel'>&#8202;James</div>
+        <div style={backRight} className='helloSpinPanel'>&#8202;Software Engineer</div>
+      </div>
   </section>
 }
 

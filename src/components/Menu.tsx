@@ -51,7 +51,6 @@ function Menu(){
   return <div style={{ 
       top:`${menuTop}px`,
       transform: `scale(${menuScale})`
-      // perspective: `${menuScale * 300 + 200}px`
       }} id="menu">
     <div style={helloStyle} className="menuButton helloButton">
       <div style={front} className='menuButtonPanel'>Hello</div>
