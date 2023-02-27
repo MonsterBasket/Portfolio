@@ -16,7 +16,7 @@ function Menu(){
       setButtonRotate(0);
     }
     else if (currPos.y < -500) {
-      setMenuTop(window.innerHeight - 30);
+      setMenuTop(window.innerHeight - 50);
       setMenuScale(1);
       setButtonRotate(1);
     }
@@ -26,7 +26,7 @@ function Menu(){
       // b = actual position from top
       // c = radius of circle - we can just use 1 as it's a % conversion
       // Final equation: radius - scrollPos * windowHeight
-      setMenuTop(1 - (currPos.y / -500) * (-window.innerHeight + 30))
+      setMenuTop(1 - (currPos.y / -500) * (-window.innerHeight + 50))
       setButtonRotate(currPos.y / -500)
       if (currPos.y / -500 < 0.5) {
         // b = scale of buttons
