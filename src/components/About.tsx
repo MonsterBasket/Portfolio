@@ -1,5 +1,5 @@
 function About(){
-  return <section className="about">
+  return <section id="about">
     <article>
     About
       <p>

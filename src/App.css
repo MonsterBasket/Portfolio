@@ -1,3 +1,4 @@
+html{scroll-behavior:smooth}
 .App {
   text-align: center;
 }
@@ -79,19 +80,19 @@ article{
   position: sticky;
   top: 5vh;
 }
-.about{
+#about{
   background-color: red;
 }
-.hello{
+#hello{
   background-color: green;
   padding: 0 0 30vh 0;
   width: 100%;
   box-sizing: border-box;
 }
-.projects{
+#projects{
   background-color: blue;
 }
-.contact{
+#contact{
   background-color: orange;
 }
 .helloButton .menuButtonPanel{
@@ -105,4 +106,7 @@ article{
 }
 .contactButton .menuButtonPanel{
   background-color: darkorange;
+}
+a{
+  color: black;
 }

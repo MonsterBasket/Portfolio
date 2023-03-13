@@ -1,5 +1,5 @@
 function Projects(){
-  return <section className="projects">
+  return <section id="projects">
     <article>
       Projects
     </article>

@@ -22,7 +22,7 @@ function Hello(){
   const back = { transform: `rotateX(${rotate * 180 - 180}deg) translateZ(50px)`, filter: `brightness(${2 * rotate - 1})` };
   const right = { transform: `rotateY(90deg) rotateZ(${rotate * 180}deg)`}
 
-  return <section className="hello">
+  return <section id="hello">
     <div className="spinContainer">
       <div className="helloSpinLeft">
         <div style={front} className='helloSpinPanel'> </div>

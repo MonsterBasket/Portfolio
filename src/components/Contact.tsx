@@ -1,5 +1,5 @@
 function Contact(){
-  return <section className="contact">
+  return <section id="contact">
     <article>
       Contact
     </article>
