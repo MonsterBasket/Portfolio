@@ -46,8 +46,11 @@ function Menu(){
     else if (currPos.y > -window.innerHeight * 2){  // "hello" after first 500
       // this one will need to take the first 500 px into account, so I'll do this last
     }
-    if (currPos.y < -window.innerHeight * 1 && currPos.y > -window.innerHeight * 3){ // about section
-      setAboutTop(currPos.y - window.innerHeight * 2)
+    if (currPos.y < -window.innerHeight * 1 && currPos.y > -window.innerHeight * 4){ // about section
+      // get the percentage of scroll between window.innerHeight*1 and *3 - then convert it
+      let pos = Math.max((window.innerHeight + currPos.y) / 3, -window.innerHeight + 50  )
+      setAboutTop(pos);
+      // setAboutTop(0 - window.innerHeight * 2 - currPos.y)
     }
     if (currPos.y < -window.innerHeight * 5 && currPos.y > -window.innerHeight * 6){ // projects section
 
@@ -90,7 +93,7 @@ function Menu(){
       <div style={projectsStyle} className="menuButton projectsButton">
         <div style={front} className='menuButtonPanel'>Projects</div>
         <div style={bottom} className='menuButtonPanel'>Projects</div>
-        <div style={back} className='menuButtonPanel'>Projects</div>
+        <div style={back} className='menuButtonPanel'>{window.innerHeight}</div>
       </div>
     </a>
     <a href="#contact">
