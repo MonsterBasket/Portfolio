@@ -44,19 +44,19 @@ function Menu(){
     //second set of conditions to set each button vpos individually
     if (currPos.y > -500){} // do nothing
     else if (currPos.y > -window.innerHeight * 2){  // "hello" after first 500
-      // this one will need to take the first 500 px into account, so I'll do this last
+      // setHelloTop(Math.max)
     }
-    if (currPos.y < -window.innerHeight * 1 && currPos.y > -window.innerHeight * 4){ // about section
-      // get the percentage of scroll between window.innerHeight*1 and *3 - then convert it
-      let pos = Math.max((window.innerHeight + currPos.y) / 3, -window.innerHeight + 50  )
-      setAboutTop(pos);
-      // setAboutTop(0 - window.innerHeight * 2 - currPos.y)
+    // start and stop effecting each button when the relevant section is in view with a 50px buffer for height of button and margin
+    if (currPos.y < -window.innerHeight * 1 - 50 && currPos.y > -window.innerHeight * 4 - 50){ // about section
+      // currPos.y is a negative number, and button pos needs to start at 0 and go negative
+      // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
+      setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
     }
-    if (currPos.y < -window.innerHeight * 5 && currPos.y > -window.innerHeight * 6){ // projects section
-
+    if (currPos.y < -window.innerHeight * 3 - 50 && currPos.y > -window.innerHeight * 6 - 50){ // projects section
+      setProjectsTop(Math.max((currPos.y + 50) / 3 + window.innerHeight, -window.innerHeight + 50 ))
     }
-    if (currPos.y < -window.innerHeight * 7 && currPos.y > -window.innerHeight * 8){ // cpntact section
-
+    if (currPos.y < -window.innerHeight * 5 - 50 && currPos.y > -window.innerHeight * 8 - 50){ // cpntact section
+      setContactTop(Math.max(((currPos.y + 50) / 5 + window.innerHeight) * 2.5, -window.innerHeight + 50 ))
     }
   })
 
@@ -77,9 +77,9 @@ function Menu(){
       }} id="menu">
     <a href="#hello">
       <div style={helloStyle} className="menuButton helloButton">
-          <div style={front} className='menuButtonPanel'>{aboutTop}</div>
+          <div style={front} className='menuButtonPanel'>{projectsTop}</div>
           <div style={bottom} className='menuButtonPanel'>Hello</div>
-          <div style={back} className='menuButtonPanel'>{aboutTop}</div>
+          <div style={back} className='menuButtonPanel'>{projectsTop}</div>
       </div>
     </a>
     <a href="#about">
@@ -91,9 +91,9 @@ function Menu(){
     </a>
     <a href="#projects">
       <div style={projectsStyle} className="menuButton projectsButton">
-        <div style={front} className='menuButtonPanel'>Projects</div>
+        <div style={front} className='menuButtonPanel'>{contactTop}</div>
         <div style={bottom} className='menuButtonPanel'>Projects</div>
-        <div style={back} className='menuButtonPanel'>{window.innerHeight}</div>
+        <div style={back} className='menuButtonPanel'>{contactTop}</div>
       </div>
     </a>
     <a href="#contact">
