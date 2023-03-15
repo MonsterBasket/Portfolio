@@ -13,26 +13,27 @@ function Menu(){
   const [contactTop, setContactTop] = useState<number>(0)
 
   useScrollPosition(({ prevPos, currPos }) => {
+    let windowLimit: number = window.innerHeight < 500 ? window.innerHeight : 500;
     if (currPos.y === 0) { // top of screen / not scrolled
       setMenuTop(0);
       setMenuScale(1);
       setButtonRotate(0);
     }
-    else if (currPos.y > -500) { // first 500 pixels of scroll
+    else if (currPos.y > -windowLimit) { // first 500 pixels of scroll
       // a** + b** = c**,  ==>  b** = c** - a**  ==>  b = sqrt(c** - a**)
       // a = % of scroll from 0 - 500px
       // b = actual position from top
       // c = radius of circle - we can just use 1 as it's a % conversion
       // Final equation: radius - scrollPos * windowHeight
-      setMenuTop(1 - (currPos.y / -500) * (-window.innerHeight + 50))
-      setButtonRotate(currPos.y / -500)
-      if (currPos.y / -500 < 0.5) {
+      setMenuTop(1 - (currPos.y / -windowLimit) * (-window.innerHeight + 50))
+      setButtonRotate(currPos.y / -windowLimit)
+      if (currPos.y / -windowLimit < 0.5) {
         // b = scale of buttons
         // scale:         sqrt(radius -               scrollPos**)          + scaleAdjustment / (1 + scaleAdjustment)
-        setMenuScale((1 - Math.sqrt(1 - Math.pow(1 - (currPos.y / -500), 2)) + 0.5) / 1.5)
+        setMenuScale((1 - Math.sqrt(1 - Math.pow(1 - (currPos.y / -windowLimit), 2)) + 0.5) / 1.5)
       }
       else {
-        setMenuScale((1 - Math.sqrt(1 - Math.pow(     currPos.y / -500,  2)) + 0.5) / 1.5)
+        setMenuScale((1 - Math.sqrt(1 - Math.pow(     currPos.y / -windowLimit,  2)) + 0.5) / 1.5)
       }
     }
     else { // set menu buttons to bottom by default
@@ -44,11 +45,11 @@ function Menu(){
     // second set of conditions to set each button vertical pos individually
     // start and stop effecting each button when the relevant section is in view with a 50px buffer for height of button and margin
     // hello section, before 500px is 0, after 2*window height is -window height + 50px
-    if (currPos.y > -500) setHelloTop(0)
+    if (currPos.y > -windowLimit) setHelloTop(0)
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
       // !!!!!!! this only works for my laptop screen height
-      setHelloTop(Math.max((window.innerHeight + currPos.y - 214) * 0.8, -window.innerHeight + 50))
+      setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
     }
 
     // about section, from window height * 1 (-50) to window height * 4 (-50)
@@ -91,23 +92,23 @@ function Menu(){
       }} id="menu">
     <a href="#hello">
       <div style={helloStyle} className="menuButton helloButton">
-          <div style={front} className='menuButtonPanel'>{projectsTop}</div>
-          <div style={bottom} className='menuButtonPanel'>Hello</div>
-          <div style={back} className='menuButtonPanel'>{projectsTop}</div>
+        <div style={front} className='menuButtonPanel'>Hello</div>
+        <div style={bottom} className='menuButtonPanel'>Hello</div>
+        <div style={back} className='menuButtonPanel'>Hello</div>
       </div>
     </a>
     <a href="#about">
       <div style={aboutStyle} className="menuButton aboutButton">
-        <div style={front} className='menuButtonPanel'>{helloTop}</div>
+        <div style={front} className='menuButtonPanel'>About</div>
         <div style={bottom} className='menuButtonPanel'>About</div>
-        <div style={back} className='menuButtonPanel'>{helloTop}</div>
+        <div style={back} className='menuButtonPanel'>About</div>
       </div>
     </a>
     <a href="#projects">
       <div style={projectsStyle} className="menuButton projectsButton">
-        <div style={front} className='menuButtonPanel'>{contactTop}</div>
+        <div style={front} className='menuButtonPanel'>Projects</div>
         <div style={bottom} className='menuButtonPanel'>Projects</div>
-        <div style={back} className='menuButtonPanel'>{contactTop}</div>
+        <div style={back} className='menuButtonPanel'>Projects</div>
       </div>
     </a>
     <a href="#contact">
