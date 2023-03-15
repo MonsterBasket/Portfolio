@@ -41,21 +41,35 @@ function Menu(){
       setButtonRotate(1);
     }
 
-    //second set of conditions to set each button vpos individually
-    if (currPos.y > -500){} // do nothing
-    else if (currPos.y > -window.innerHeight * 2){  // "hello" after first 500
-      // setHelloTop(Math.max)
-    }
+    // second set of conditions to set each button vertical pos individually
     // start and stop effecting each button when the relevant section is in view with a 50px buffer for height of button and margin
-    if (currPos.y < -window.innerHeight * 1 - 50 && currPos.y > -window.innerHeight * 4 - 50){ // about section
+    // hello section, before 500px is 0, after 2*window height is -window height + 50px
+    if (currPos.y > -500) setHelloTop(0)
+    else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
+    else {
+      // !!!!!!! this only works for my laptop screen height
+      setHelloTop(Math.max((window.innerHeight + currPos.y - 214) * 0.8, -window.innerHeight + 50))
+    }
+
+    // about section, from window height * 1 (-50) to window height * 4 (-50)
+    if (currPos.y > -window.innerHeight * 1 - 50) setAboutTop(0)
+    else if (currPos.y <-window.innerHeight * 4 - 50) setAboutTop(-window.innerHeight + 50)
+    else {
       // currPos.y is a negative number, and button pos needs to start at 0 and go negative
       // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
       setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
     }
-    if (currPos.y < -window.innerHeight * 3 - 50 && currPos.y > -window.innerHeight * 6 - 50){ // projects section
+
+    // projects section, from window Height * 3 to window height * 6
+    if (currPos.y > -window.innerHeight * 3 - 50) setProjectsTop(0)
+    else if (currPos.y < -window.innerHeight * 6 - 50) setProjectsTop(-window.innerHeight + 50)
+    else {
       setProjectsTop(Math.max((currPos.y + 50) / 3 + window.innerHeight, -window.innerHeight + 50 ))
     }
-    if (currPos.y < -window.innerHeight * 5 - 50 && currPos.y > -window.innerHeight * 8 - 50){ // cpntact section
+
+    // contact section; from window height * 5 onwards, exaggerated movement as you can't scroll past the bottom section
+    if (currPos.y > -window.innerHeight * 5 - 50) setContactTop(0)
+    else {
       setContactTop(Math.max(((currPos.y + 50) / 5 + window.innerHeight) * 2.5, -window.innerHeight + 50 ))
     }
   })
@@ -84,9 +98,9 @@ function Menu(){
     </a>
     <a href="#about">
       <div style={aboutStyle} className="menuButton aboutButton">
-        <div style={front} className='menuButtonPanel'>About</div>
+        <div style={front} className='menuButtonPanel'>{helloTop}</div>
         <div style={bottom} className='menuButtonPanel'>About</div>
-        <div style={back} className='menuButtonPanel'>About</div>
+        <div style={back} className='menuButtonPanel'>{helloTop}</div>
       </div>
     </a>
     <a href="#projects">
