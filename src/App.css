@@ -4,18 +4,31 @@ html{scroll-behavior:smooth}
 }
 #menu{
   position: fixed;
-  display: grid;
+  /* display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 5px;
-  left: calc(50% - 207.5px);
+  left: calc(50% - 207.5px); */
+  display: block;
+  left: 0%;
+  width: 100%;
+  height: 30px;
   margin: 10px 0;
 }
 .menuButton{
+  display: inline-block;
   width: 100px;
   height: 30px;
   line-height: 30px;
   padding: 0px;
-  position: relative;
+  position: absolute;
+}
+@media only screen and (max-width: 500px) {
+  #menu{
+    left: calc(50% - 158.5px);
+  }
+  .menuButton{
+    width: 75px;
+  }
 }
 .menuButtonPanel{
   transform-style: preserve-3d;
