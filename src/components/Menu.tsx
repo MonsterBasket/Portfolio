@@ -12,19 +12,30 @@ function Menu(){
   const [projectsTop, setProjectsTop] = useState<number>(0)
   const [contactTop, setContactTop] = useState<number>(0)
 
-  // these all need to change when screen width is changed, they currently only change on refresh
-  window.addEventListener('resize', adjustMenuLeft);
-  const [helloLeft, setHelloLeft] = useState<number>(window.innerWidth / 2 - 207)
-  const [aboutLeft, setAboutLeft] = useState<number>(window.innerWidth / 2 - 102.5)
-  const [projectsLeft, setProjectsLeft] = useState<number>(window.innerWidth / 2 + 2.5)
-  const [contactLeft, setContactLeft] = useState<number>(window.innerWidth / 2 + 107)
+  // used for pushing them up against the left side of the screen
+  const [helloTangent, setHelloTangent] = useState<number>(1)
+  const [aboutTangent, setAboutTangent] = useState<number>(1)
+  const [projectsTangent, setProjectsTangent] = useState<number>(1)
+  const [contactTangent, setContactTangent] = useState<number>(1)
+  // re-align as each button moves in and out of rows
+  const [helloAlign, setHelloAlign] = useState<number>(0)
+  const [aboutAlign, setAboutAlign] = useState<number>(0)
+  const [projectsAlign, setProjectsAlign] = useState<number>(0)
+  const [contactAlign, setContactAlign] = useState<number>(0)
+  // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
+  const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : 75)
+  const [helloLeft, setHelloLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth * 2 - 2.5) - helloAlign) * helloTangent + 10)
+  const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth - 7.5) - aboutAlign) * aboutTangent + 10)
+  const [projectsLeft, setProjectsLeft] = useState<number>((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
+  const [contactLeft, setContactLeft] = useState<number>((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
 
-  function adjustMenuLeft(){
-    setHelloLeft(window.innerWidth / 2 - (window.innerWidth > 500 ? 207 : 157))
-    setAboutLeft(window.innerWidth / 2 - (window.innerWidth > 500 ? 102.5 : 77.5))
+  window.addEventListener('resize', () => {
+    let buttonWidth = window.innerWidth > 500 ? 100 : 75 // local variable to avoid setstate delay
+    setHelloLeft(window.innerWidth / 2 - (buttonWidth * 2 + 7))
+    setAboutLeft(window.innerWidth / 2 - (buttonWidth + 2.5))
     setProjectsLeft(window.innerWidth / 2 + 2.5)
-    setContactLeft(window.innerWidth / 2 + (window.innerWidth > 500 ? 107 : 82))
-    }
+    setContactLeft(window.innerWidth / 2 + (buttonWidth + 7))
+  });
 
   useScrollPosition(({ prevPos, currPos }) => {
     let windowLimit: number = window.innerHeight < 500 ? window.innerHeight : 500;

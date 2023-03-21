@@ -23,9 +23,6 @@ html{scroll-behavior:smooth}
   position: absolute;
 }
 @media only screen and (max-width: 500px) {
-  #menu{
-    left: calc(50% - 158.5px);
-  }
   .menuButton{
     width: 75px;
   }
