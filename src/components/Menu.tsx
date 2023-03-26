@@ -24,20 +24,23 @@ function Menu(){
   const [contactAlign, setContactAlign] = useState<number>(0)
   // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
   const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : 75)
-  const [helloLeft, setHelloLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth * 2 - 2.5) - helloAlign) * helloTangent + 10)
-  const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth - 7.5) - aboutAlign) * aboutTangent + 10)
+  const [helloLeft, setHelloLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 10)
+  const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
   const [projectsLeft, setProjectsLeft] = useState<number>((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
   const [contactLeft, setContactLeft] = useState<number>((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
 
-  window.addEventListener('resize', () => {
+  window.addEventListener('resize', setAllLeft);
+  
+  function setAllLeft(){
     let buttonWidth = window.innerWidth > 500 ? 100 : 75 // local variable to avoid setstate delay
-    setHelloLeft(window.innerWidth / 2 - (buttonWidth * 2 + 7))
-    setAboutLeft(window.innerWidth / 2 - (buttonWidth + 2.5))
-    setProjectsLeft(window.innerWidth / 2 + 2.5)
-    setContactLeft(window.innerWidth / 2 + (buttonWidth + 7))
-  });
+    setHelloLeft((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 10)
+    setAboutLeft((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
+    setProjectsLeft((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
+    setContactLeft((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
+  }
 
   useScrollPosition(({ prevPos, currPos }) => {
+    // window limit sets the first section scroll limit to the lesser of window height or 500px
     let windowLimit: number = window.innerHeight < 500 ? window.innerHeight : 500;
     if (currPos.y === 0) { // top of screen / not scrolled
       setMenuTop(0);
@@ -73,9 +76,19 @@ function Menu(){
     if (currPos.y > -windowLimit) setHelloTop(0)
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
-      // !!!!!!! this only works for my laptop screen height
       setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
     }
+    // two more statements that kick in 50px before and after the above to push button to the left
+    if (currPos.y < -windowLimit + 25 && currPos.y > -windowLimit - 25) {
+      // trying to get it to smoothly move from middle to left... this does NOT work
+      setHelloTangent((currPos.y / (-windowLimit + 25)) / (currPos.y / (-windowLimit - 25)));
+    }
+    // this condition works as the section reaches the top, but the button reaches the top earlier
+    else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
+      setHelloTangent(0.5)
+    }
+    else setHelloTangent(1);
+
 
     // about section, from window height * 1 (-50) to window height * 4 (-50)
     if (currPos.y > -window.innerHeight * 1 - 50) setAboutTop(0)
@@ -98,6 +111,9 @@ function Menu(){
     else {
       setContactTop(Math.max(((currPos.y + 50) / 5 + window.innerHeight) * 2.5, -window.innerHeight + 50 ))
     }
+
+    // yep, this will be constantly setting state and aligning all buttons whenever you're scrolling...
+    setAllLeft();
   })
 
   const helloStyle = { perspectiveOrigin: "200% center", perspective: `${menuScale * 100 + 300}px`, top: `${helloTop}px`, left: `${helloLeft}px` };
