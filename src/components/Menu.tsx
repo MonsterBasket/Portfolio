@@ -41,7 +41,7 @@ function Menu(){
 
   useScrollPosition(({ prevPos, currPos }) => {
     // window limit sets the first section scroll limit to the lesser of window height or 500px
-    let windowLimit: number = window.innerHeight < 500 ? window.innerHeight : 500;
+    let windowLimit: number = Math.min(window.innerHeight, 500);
     if (currPos.y === 0) { // top of screen / not scrolled
       setMenuTop(0);
       setMenuScale(1);
@@ -76,17 +76,22 @@ function Menu(){
     if (currPos.y > -windowLimit) setHelloTop(0)
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
-      setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
+      // setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
+      // this needs to start at windowLimit but end at window.innerHeight... CONFUSING
+      setHelloTop((1 - ((windowLimit - currPos.y) / windowLimit / 2)) * window.innerHeight)
     }
     // two more statements that kick in 50px before and after the above to push button to the left
     if (currPos.y < -windowLimit + 25 && currPos.y > -windowLimit - 25) {
-      // trying to get it to smoothly move from middle to left... this does NOT work
-      setHelloTangent((currPos.y / (-windowLimit + 25)) / (currPos.y / (-windowLimit - 25)));
+      // smooth ease from mid to left (1 to 0 tangent as %)
+      // also need to adjust setabout/contact/projectAlign to be three buttons
+      setHelloTangent(1 - (-window.innerHeight + 25 - currPos.y) / 50)
     }
     // this condition works as the section reaches the top, but the button reaches the top earlier
     else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
-      setHelloTangent(0.5)
+      setHelloTangent((-window.innerHeight * 2 + 50 - currPos.y) / 50)
     }
+    else if (currPos.y < -windowLimit - 25 && currPos.y > -window.innerHeight * 2 + 50)
+      setHelloTangent(0)
     else setHelloTangent(1);
 
 
@@ -139,7 +144,7 @@ function Menu(){
     <a href="#about" style={aboutStyle} className="menuButton aboutButton">
       <div style={front} className='menuButtonPanel'>About</div>
       <div style={bottom} className='menuButtonPanel'>About</div>
-      <div style={back} className='menuButtonPanel'>About</div>
+      <div style={back} className='menuButtonPanel'>{helloTangent}</div>
     </a>
     <a href="#projects" style={projectsStyle} className="menuButton projectsButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
