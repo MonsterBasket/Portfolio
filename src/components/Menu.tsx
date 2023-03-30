@@ -28,6 +28,12 @@ function Menu(){
   const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
   const [projectsLeft, setProjectsLeft] = useState<number>((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
   const [contactLeft, setContactLeft] = useState<number>((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
+  // width of button used in conjunction with buttonWidth and tangent
+  const [helloWidth, sethelloWidth] = useState<number>(buttonWidth)
+  const [aboutWidth, setaboutWidth] = useState<number>(buttonWidth)
+  const [projectsWidth, setprojectsWidth] = useState<number>(buttonWidth)
+  const [contactWidth, setcontactWidth] = useState<number>(buttonWidth)  //need to add tangent calc here
+
 
   window.addEventListener('resize', setAllLeft);
   
@@ -78,13 +84,14 @@ function Menu(){
     else {
       // setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
       // this needs to start at windowLimit but end at window.innerHeight... CONFUSING
-      setHelloTop((1 - ((windowLimit - currPos.y) / windowLimit / 2)) * window.innerHeight)
+      setHelloTop((-(currPos.y + windowLimit) / (window.innerHeight * 2 - windowLimit + 70) * -window.innerHeight))
+      // setHelloTop((1 - ((windowLimit - currPos.y) / windowLimit / 2)) * window.innerHeight)
     }
     // two more statements that kick in 50px before and after the above to push button to the left
     if (currPos.y < -windowLimit + 25 && currPos.y > -windowLimit - 25) {
       // smooth ease from mid to left (1 to 0 tangent as %)
       // also need to adjust setabout/contact/projectAlign to be three buttons
-      setHelloTangent(1 - (-window.innerHeight + 25 - currPos.y) / 50)
+      setHelloTangent(1 - (-windowLimit + 25 - currPos.y) / 50)
     }
     // this condition works as the section reaches the top, but the button reaches the top earlier
     else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
@@ -121,10 +128,10 @@ function Menu(){
     setAllLeft();
   })
 
-  const helloStyle = { perspectiveOrigin: "200% center", perspective: `${menuScale * 100 + 300}px`, top: `${helloTop}px`, left: `${helloLeft}px` };
-  const aboutStyle = { perspectiveOrigin: "100% center", perspective: `${menuScale * 100 + 300}px`, top: `${aboutTop}px`, left: `${aboutLeft}px` };
-  const projectsStyle = { perspectiveOrigin: "0% center", perspective: `${menuScale * 100 + 300}px`, top: `${projectsTop}px`, left: `${projectsLeft}px` };
-  const contactStyle = { perspectiveOrigin: "-100% center", perspective: `${menuScale * 100 + 300}px`, top: `${contactTop}px`, left: `${contactLeft}px` };
+  const helloStyle = { perspectiveOrigin: "200% center", perspective: `${menuScale * 100 + 300}px`, top: `${helloTop}px`, left: `${helloLeft}px`, width: `${helloWidth}px` };
+  const aboutStyle = { perspectiveOrigin: "100% center", perspective: `${menuScale * 100 + 300}px`, top: `${aboutTop}px`, left: `${aboutLeft}px`, width: `${aboutWidth}px` };
+  const projectsStyle = { perspectiveOrigin: "0% center", perspective: `${menuScale * 100 + 300}px`, top: `${projectsTop}px`, left: `${projectsLeft}px`, width: `${projectsWidth}px` };
+  const contactStyle = { perspectiveOrigin: "-100% center", perspective: `${menuScale * 100 + 300}px`, top: `${contactTop}px`, left: `${contactLeft}px`, width: `${contactWidth}px` };
   const front = { transform: `rotateX(${buttonRotate * 180}deg) translateZ(15px)`, filter: `brightness(${2 * buttonRotate + 1})` };
   const bottom = { transform: `rotateX(${buttonRotate * 180 - 90}deg) translateZ(15px)`, filter: `brightness(${2 * buttonRotate})` };
   const back = { transform: `rotateX(${buttonRotate * 180 - 180}deg) translateZ(15px)`, filter: `brightness(${2 * buttonRotate - 1})` };
