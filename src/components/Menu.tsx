@@ -23,27 +23,32 @@ function Menu(){
   const [projectsAlign, setProjectsAlign] = useState<number>(0)
   const [contactAlign, setContactAlign] = useState<number>(0)
   // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
-  const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : 75)
+  const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : window.innerWidth / 5)
   const [helloLeft, setHelloLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 10)
   const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
   const [projectsLeft, setProjectsLeft] = useState<number>((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
   const [contactLeft, setContactLeft] = useState<number>((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
   // width of button used in conjunction with buttonWidth and tangent
-  const [helloWidth, sethelloWidth] = useState<number>(buttonWidth)
-  const [aboutWidth, setaboutWidth] = useState<number>(buttonWidth)
-  const [projectsWidth, setprojectsWidth] = useState<number>(buttonWidth)
-  const [contactWidth, setcontactWidth] = useState<number>(buttonWidth)  //need to add tangent calc here
+  const [helloWidth, setHelloWidth] = useState<number>((buttonWidth - 15) * helloTangent + 15)
+  const [aboutWidth, setAboutWidth] = useState<number>((buttonWidth - 15) * aboutTangent + 15)
+  const [projectsWidth, setProjectsWidth] = useState<number>((buttonWidth - 15) * projectsTangent + 15)
+  const [contactWidth, setContactWidth] = useState<number>((buttonWidth - 15) * contactTangent + 15)
 
 
   window.addEventListener('resize', setAllLeft);
   
   function setAllLeft(){
-    let buttonWidth = window.innerWidth > 500 ? 100 : 75 // local variable to avoid setstate delay
-    setHelloLeft((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 10)
-    setAboutLeft((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
-    setProjectsLeft((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 10)
-    setContactLeft((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 10)
-  }
+    let buttonWidth = window.innerWidth > 500 ? 100 : window.innerWidth / 5 // local variable to avoid setstate delay
+    setButtonWidth(buttonWidth)
+    setHelloLeft((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 5)
+    setAboutLeft((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 5)
+    setProjectsLeft((window.innerWidth / 2 - 7.5 - projectsAlign) * projectsTangent + 5)
+    setContactLeft((window.innerWidth / 2 + (buttonWidth -2.5) - contactAlign) * contactTangent + 5)
+    setHelloWidth((buttonWidth - 15) * helloTangent + 15)
+    setAboutWidth((buttonWidth - 15) * aboutTangent + 15)
+    setProjectsWidth((buttonWidth - 15) * projectsTangent + 15)
+    setContactWidth((buttonWidth - 15) * contactTangent + 15)
+    }
 
   useScrollPosition(({ prevPos, currPos }) => {
     // window limit sets the first section scroll limit to the lesser of window height or 500px
@@ -82,24 +87,32 @@ function Menu(){
     if (currPos.y > -windowLimit) setHelloTop(0)
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
-      // setHelloTop(Math.max((windowLimit + currPos.y) / (window.innerHeight / 1000), -window.innerHeight + 50))
-      // this needs to start at windowLimit but end at window.innerHeight... CONFUSING
+      // This could be refined a little, but it's a combination of the above else if condition and below logic, and it also affects the tangent conditions below, for now it works well enough
       setHelloTop((-(currPos.y + windowLimit) / (window.innerHeight * 2 - windowLimit + 70) * -window.innerHeight))
-      // setHelloTop((1 - ((windowLimit - currPos.y) / windowLimit / 2)) * window.innerHeight)
     }
     // two more statements that kick in 50px before and after the above to push button to the left
     if (currPos.y < -windowLimit + 25 && currPos.y > -windowLimit - 25) {
       // smooth ease from mid to left (1 to 0 tangent as %)
       // also need to adjust setabout/contact/projectAlign to be three buttons
-      setHelloTangent(1 - (-windowLimit + 25 - currPos.y) / 50)
+      let temp = 1 - (-windowLimit + 25 - currPos.y) / 50
+      setHelloTangent(temp)
+      setHelloWidth((buttonWidth - 30) * temp + 30)
+      // setContactLeft() // This is gonna suck, the left calculation already sucks, now I need to redo it and transitionally remove half a button width from all three remaining buttons
     }
-    // this condition works as the section reaches the top, but the button reaches the top earlier
+    // Adjust the left alignment and width of the button as it reaches the top of the screen
     else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
-      setHelloTangent((-window.innerHeight * 2 + 50 - currPos.y) / 50)
+      let temp = (-window.innerHeight * 2 + 50 - currPos.y) / 50
+      setHelloTangent(temp)
+      setHelloWidth((buttonWidth - 15) * temp + 15)
     }
-    else if (currPos.y < -windowLimit - 25 && currPos.y > -window.innerHeight * 2 + 50)
+    else if (currPos.y < -windowLimit - 25 && currPos.y > -window.innerHeight * 2 + 50) {
       setHelloTangent(0)
-    else setHelloTangent(1);
+      setHelloWidth(15)
+    }    
+    else {
+    setHelloTangent(1)
+    setHelloWidth(buttonWidth)
+    }
 
 
     // about section, from window height * 1 (-50) to window height * 4 (-50)
