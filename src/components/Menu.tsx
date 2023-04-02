@@ -84,7 +84,10 @@ function Menu(){
     // second set of conditions to set each button vertical pos individually
     // start and stop effecting each button when the relevant section is in view with a 50px buffer for height of button and margin
     // hello section, before 500px is 0, after 2*window height is -window height + 50px
-    if (currPos.y > -windowLimit) setHelloTop(0)
+    if (currPos.y > -windowLimit) {
+      setHelloTop(0)
+      setHelloAlign(0)
+    }
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
       // This could be refined a little, but it's a combination of the above else if condition and below logic, and it also affects the tangent conditions below, for now it works well enough
@@ -97,17 +100,28 @@ function Menu(){
       let temp = 1 - (-windowLimit + 25 - currPos.y) / 50
       setHelloTangent(temp)
       setHelloWidth((buttonWidth - 30) * temp + 30)
-      // setContactLeft() // This is gonna suck, the left calculation already sucks, now I need to redo it and transitionally remove half a button width from all three remaining buttons
+      let helloAlign = (buttonWidth / 2 + 10) * (1 - temp)
+      setHelloAlign(0)
+      setAboutAlign(helloAlign)
+      setProjectsAlign(helloAlign)
+      setContactAlign(helloAlign)
     }
     // Adjust the left alignment and width of the button as it reaches the top of the screen
     else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
       let temp = (-window.innerHeight * 2 + 50 - currPos.y) / 50
       setHelloTangent(temp)
       setHelloWidth((buttonWidth - 15) * temp + 15)
+      setHelloAlign(-buttonWidth * 1.5 - 10)
     }
     else if (currPos.y < -windowLimit - 25 && currPos.y > -window.innerHeight * 2 + 50) {
       setHelloTangent(0)
       setHelloWidth(15)
+      setHelloAlign(-buttonWidth * 1.5 - 10)
+      let helloAlign = (buttonWidth / 2 + 10)
+      setAboutAlign(helloAlign)
+      setProjectsAlign(helloAlign)
+      setContactAlign(helloAlign)
+
     }    
     else {
     setHelloTangent(1)
