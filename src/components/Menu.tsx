@@ -3,26 +3,41 @@ import { useState } from 'react';
 
 function Menu(){
 
+  // Used for the cylinder effect in the hello section, pushes the menu button container to the bottom, while transforming rotate and scale along the way
   const [menuTop, setMenuTop] = useState<number>(0)
   const [menuScale, setMenuScale] = useState<number>(1)
   const [buttonRotate, setButtonRotate] = useState<number>(0)
 
+  // Individually sets each button's position from the top, as the whole section gets pushed to the bottom, these numbers are between 0 and -screenHeight - (buttonHeight + top margin)
   const [helloTop, setHelloTop] = useState<number>(0)
   const [aboutTop, setAboutTop] = useState<number>(0)
   const [projectsTop, setProjectsTop] = useState<number>(0)
   const [contactTop, setContactTop] = useState<number>(0)
 
-  // used for pushing them up against the left side of the screen
+  // used for pushing them up against the left side of the screen - the whole calculation in helloLeft is multiplied by this
+  // so that when this is 0, Left will be 0 (+10) and the button will be 10 pixels off the left screen edge
+  // setting this to 1 just defaults the rest of the calculation to it's natural position in the row of buttons at top or bottom
   const [helloTangent, setHelloTangent] = useState<number>(1)
   const [aboutTangent, setAboutTangent] = useState<number>(1)
   const [projectsTangent, setProjectsTangent] = useState<number>(1)
   const [contactTangent, setContactTangent] = useState<number>(1)
-  // re-align as each button moves in and out of rows
+  // let helloTangent: number = 1
+  // let aboutTangent: number = 1
+  // let projectsTangent: number = 1
+  // let contactTangent: number = 1  
+  // re-align as each button moves in and out of rows - the helloLeft calculation subtracts this from the total, so at each realignment
+  // I need to take the original starting point into consideration, and subtract as many button widths + border (5px) as required.
+  // when they get to the top, they change order, so hello and about will need to go into negative numbers to push them further right than their original pos
   const [helloAlign, setHelloAlign] = useState<number>(0)
   const [aboutAlign, setAboutAlign] = useState<number>(0)
   const [projectsAlign, setProjectsAlign] = useState<number>(0)
   const [contactAlign, setContactAlign] = useState<number>(0)
+  // let helloAlign: number = 0
+  // let aboutAlign: number = 0
+  // let projectsAlign: number = 0
+  // let contactAlign: number = 0
   // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
+  // This is the calculation described in the above two statements, that sets the overall left position of the buttons
   const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : window.innerWidth / 5)
   const [helloLeft, setHelloLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth * 2 + 17.5) - helloAlign) * helloTangent + 10)
   const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth + 12.5) - aboutAlign) * aboutTangent + 10)
@@ -135,20 +150,23 @@ function Menu(){
 
     // ABOUT -- ABOUT -- ABOUT -- ABOUT -- ABOUT
     // about section, from window height * 1 (-50) to window height * 4 (-50)
-    if (currPos.y > -window.innerHeight * 1 - 50) {
+    if (currPos.y > -window.innerHeight - 50) {
       setAboutTop(0)
       setAboutTangent(1)
     }
-    else if (currPos.y <-window.innerHeight * 4 - 50) {
+    else if (currPos.y < -window.innerHeight * 4 - 50) {
       setAboutTop(-window.innerHeight + 50)
       setHelloAlign(-buttonWidth * 2 - 17.5)
-      setAboutAlign(0)
+      setAboutAlign(1)
+      setAboutTangent(1)
     }
     else {
       // currPos.y is a negative number, and button pos needs to start at 0 and go negative
       // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
       setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
       setAboutTangent(0)
+      setProjectsAlign(buttonWidth + 15)
+      setContactAlign(buttonWidth + 15)
     }
     // left alignment
     if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 50) {
@@ -158,6 +176,10 @@ function Menu(){
       setProjectsAlign(aboutAlign)
       setContactAlign(aboutAlign)
     }
+    else if (currPos.y < -window.innerHeight * 4 && currPos.y > -window.innerHeight * 4 -50) {
+      setAboutTangent(0)
+    }
+
 
     // PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS
     // projects section, from window Height * 3 to window height * 6
@@ -201,12 +223,12 @@ function Menu(){
     <a href="#about" style={aboutStyle} className="menuButton aboutButton">
       <div style={front} className='menuButtonPanel'>About</div>
       <div style={bottom} className='menuButtonPanel'>About</div>
-      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
+      <div style={back} className='menuButtonPanel'>About</div>
     </a>
     <a href="#projects" style={projectsStyle} className="menuButton projectsButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
       <div style={bottom} className='menuButtonPanel'>Projects</div>
-      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
+      <div style={back} className='menuButtonPanel'>Projects</div>
     </a>
     <a href="#contact" style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>
