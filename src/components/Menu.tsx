@@ -81,12 +81,16 @@ function Menu(){
       setButtonRotate(1);
     }
 
+    // HELLO -- HELLO -- HELLO -- HELLO -- HELLO -- HELLO
     // second set of conditions to set each button vertical pos individually
     // start and stop effecting each button when the relevant section is in view with a 50px buffer for height of button and margin
     // hello section, before 500px is 0, after 2*window height is -window height + 50px
     if (currPos.y > -windowLimit) {
       setHelloTop(0)
       setHelloAlign(0)
+      setAboutAlign(0)
+      setProjectsAlign(0)
+      setContactAlign(0)
     }
     else if (currPos.y < -window.innerHeight * 2) setHelloTop(-window.innerHeight + 50)
     else {
@@ -99,7 +103,7 @@ function Menu(){
       // also need to adjust setabout/contact/projectAlign to be three buttons
       let temp = 1 - (-windowLimit + 25 - currPos.y) / 50
       setHelloTangent(temp)
-      setHelloWidth((buttonWidth - 30) * temp + 30)
+      // setHelloWidth((buttonWidth - 30) * temp + 30) // Not needed beause I'm calling setAllLeft every frame while scrolling
       let helloAlign = (buttonWidth / 2 + 10) * (1 - temp)
       setHelloAlign(0)
       setAboutAlign(helloAlign)
@@ -126,18 +130,36 @@ function Menu(){
     else {
     setHelloTangent(1)
     setHelloWidth(buttonWidth)
+    setAboutTangent(0)
     }
 
-
+    // ABOUT -- ABOUT -- ABOUT -- ABOUT -- ABOUT
     // about section, from window height * 1 (-50) to window height * 4 (-50)
-    if (currPos.y > -window.innerHeight * 1 - 50) setAboutTop(0)
-    else if (currPos.y <-window.innerHeight * 4 - 50) setAboutTop(-window.innerHeight + 50)
+    if (currPos.y > -window.innerHeight * 1 - 50) {
+      setAboutTop(0)
+      setAboutTangent(1)
+    }
+    else if (currPos.y <-window.innerHeight * 4 - 50) {
+      setAboutTop(-window.innerHeight + 50)
+      setHelloAlign(-buttonWidth * 2 - 17.5)
+      setAboutAlign(0)
+    }
     else {
       // currPos.y is a negative number, and button pos needs to start at 0 and go negative
       // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
       setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
+      setAboutTangent(0)
+    }
+    // left alignment
+    if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 50) {
+      let temp = 1 - (-window.innerHeight - currPos.y) / 50
+      setAboutTangent(temp)
+      let aboutAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 15) * (1 - temp)
+      setProjectsAlign(aboutAlign)
+      setContactAlign(aboutAlign)
     }
 
+    // PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS
     // projects section, from window Height * 3 to window height * 6
     if (currPos.y > -window.innerHeight * 3 - 50) setProjectsTop(0)
     else if (currPos.y < -window.innerHeight * 6 - 50) setProjectsTop(-window.innerHeight + 50)
@@ -145,6 +167,7 @@ function Menu(){
       setProjectsTop(Math.max((currPos.y + 50) / 3 + window.innerHeight, -window.innerHeight + 50 ))
     }
 
+    // CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT
     // contact section; from window height * 5 onwards, exaggerated movement as you can't scroll past the bottom section
     if (currPos.y > -window.innerHeight * 5 - 50) setContactTop(0)
     else {
@@ -178,12 +201,12 @@ function Menu(){
     <a href="#about" style={aboutStyle} className="menuButton aboutButton">
       <div style={front} className='menuButtonPanel'>About</div>
       <div style={bottom} className='menuButtonPanel'>About</div>
-      <div style={back} className='menuButtonPanel'>{helloTangent}</div>
+      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
     </a>
     <a href="#projects" style={projectsStyle} className="menuButton projectsButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
       <div style={bottom} className='menuButtonPanel'>Projects</div>
-      <div style={back} className='menuButtonPanel'>Projects</div>
+      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
     </a>
     <a href="#contact" style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>
