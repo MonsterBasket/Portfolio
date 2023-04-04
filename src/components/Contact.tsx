@@ -1,7 +1,7 @@
 function Contact(){
   return <section id="contact">
     <article>
-      Contact
+      o
     </article>
   </section>
 }

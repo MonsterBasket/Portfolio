@@ -119,67 +119,74 @@ function Menu(){
       let temp = 1 - (-windowLimit + 25 - currPos.y) / 50
       setHelloTangent(temp)
       // setHelloWidth((buttonWidth - 30) * temp + 30) // Not needed beause I'm calling setAllLeft every frame while scrolling
-      let helloAlign = (buttonWidth / 2 + 10) * (1 - temp)
+      let tempAlign = (buttonWidth / 2 + 10) * (1 - temp)
       setHelloAlign(0)
-      setAboutAlign(helloAlign)
-      setProjectsAlign(helloAlign)
-      setContactAlign(helloAlign)
+      setAboutAlign(tempAlign)
+      setProjectsAlign(tempAlign)
+      setContactAlign(tempAlign)
     }
     // Adjust the left alignment and width of the button as it reaches the top of the screen
     else if (currPos.y < -window.innerHeight * 2 + 50 && currPos.y > -window.innerHeight * 2) {
       let temp = (-window.innerHeight * 2 + 50 - currPos.y) / 50
       setHelloTangent(temp)
-      setHelloWidth((buttonWidth - 15) * temp + 15)
-      setHelloAlign(-buttonWidth * 1.5 - 10)
+      // setHelloWidth((buttonWidth - 15) * temp + 15)
+      // setHelloAlign(-buttonWidth * 1.5 - 10)
     }
     else if (currPos.y < -windowLimit - 25 && currPos.y > -window.innerHeight * 2 + 50) {
       setHelloTangent(0)
-      setHelloWidth(15)
+      // setHelloWidth(15)
       setHelloAlign(-buttonWidth * 1.5 - 10)
-      let helloAlign = (buttonWidth / 2 + 10)
-      setAboutAlign(helloAlign)
-      setProjectsAlign(helloAlign)
-      setContactAlign(helloAlign)
+      let tempAlign = (buttonWidth / 2 + 10)
+      setAboutAlign(tempAlign)
+      setProjectsAlign(tempAlign)
+      setContactAlign(tempAlign)
 
     }    
     else {
     setHelloTangent(1)
-    setHelloWidth(buttonWidth)
-    setAboutTangent(0)
+    // setHelloWidth(buttonWidth)
+    // setAboutTangent(0)
     }
 
     // ABOUT -- ABOUT -- ABOUT -- ABOUT -- ABOUT
     // about section, from window height * 1 (-50) to window height * 4 (-50)
     if (currPos.y > -window.innerHeight - 50) {
       setAboutTop(0)
-      setAboutTangent(1)
     }
     else if (currPos.y < -window.innerHeight * 4 - 50) {
       setAboutTop(-window.innerHeight + 50)
-      setHelloAlign(-buttonWidth * 2 - 17.5)
-      setAboutAlign(1)
-      setAboutTangent(1)
     }
     else {
       // currPos.y is a negative number, and button pos needs to start at 0 and go negative
       // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
       setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
-      setAboutTangent(0)
-      setProjectsAlign(buttonWidth + 15)
-      setContactAlign(buttonWidth + 15)
+      setProjectsAlign(buttonWidth + 10)
+      setContactAlign(buttonWidth + 10)
     }
     // left alignment
-    if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 50) {
-      let temp = 1 - (-window.innerHeight - currPos.y) / 50
+    if (currPos.y > -window.innerHeight){
+      setAboutTangent(1)
+    }
+    else if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 100) {
+      let temp = 1 - (-window.innerHeight - currPos.y) / 100
       setAboutTangent(temp)
-      let aboutAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 15) * (1 - temp)
+      let aboutAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 12.5) * (1 - temp)
       setProjectsAlign(aboutAlign)
       setContactAlign(aboutAlign)
     }
-    else if (currPos.y < -window.innerHeight * 4 && currPos.y > -window.innerHeight * 4 -50) {
+    else if (currPos.y < -window.innerHeight - 100 && currPos.y > -window.innerHeight * 4 + 100) {
       setAboutTangent(0)
     }
-
+    else if (currPos.y < -window.innerHeight * 4 + 100 && currPos.y > -window.innerHeight * 4) {
+      let temp = ((-window.innerHeight * 4 + 100 - currPos.y) / 100)
+      setAboutTangent(temp)
+      setHelloAlign((-buttonWidth * 1.5 - 5) - (buttonWidth / 2 + 2.5) * temp)
+    }
+    else {
+      setAboutTangent(1)
+      setHelloAlign(-buttonWidth * 2 - 17.5)
+      setAboutAlign(0)
+    }
 
     // PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS
     // projects section, from window Height * 3 to window height * 6
@@ -228,7 +235,7 @@ function Menu(){
     <a href="#projects" style={projectsStyle} className="menuButton projectsButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
       <div style={bottom} className='menuButtonPanel'>Projects</div>
-      <div style={back} className='menuButtonPanel'>Projects</div>
+      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
     </a>
     <a href="#contact" style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>
