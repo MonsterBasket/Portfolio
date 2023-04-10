@@ -21,10 +21,6 @@ function Menu(){
   const [aboutTangent, setAboutTangent] = useState<number>(1)
   const [projectsTangent, setProjectsTangent] = useState<number>(1)
   const [contactTangent, setContactTangent] = useState<number>(1)
-  // let helloTangent: number = 1
-  // let aboutTangent: number = 1
-  // let projectsTangent: number = 1
-  // let contactTangent: number = 1  
   // re-align as each button moves in and out of rows - the helloLeft calculation subtracts this from the total, so at each realignment
   // I need to take the original starting point into consideration, and subtract as many button widths + border (5px) as required.
   // when they get to the top, they change order, so hello and about will need to go into negative numbers to push them further right than their original pos
@@ -32,10 +28,6 @@ function Menu(){
   const [aboutAlign, setAboutAlign] = useState<number>(0)
   const [projectsAlign, setProjectsAlign] = useState<number>(0)
   const [contactAlign, setContactAlign] = useState<number>(0)
-  // let helloAlign: number = 0
-  // let aboutAlign: number = 0
-  // let projectsAlign: number = 0
-  // let contactAlign: number = 0
   // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
   // This is the calculation described in the above two statements, that sets the overall left position of the buttons
   const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : window.innerWidth / 5)
@@ -160,8 +152,8 @@ function Menu(){
       // currPos.y is a negative number, and button pos needs to start at 0 and go negative
       // so this is clamped between a calculation of the scrollpos for the current section, and screenHeight - 50px
       setAboutTop(Math.max((window.innerHeight + currPos.y + 50) / 3, -window.innerHeight + 50 ))
-      setProjectsAlign(buttonWidth + 10)
-      setContactAlign(buttonWidth + 10)
+      setProjectsAlign(buttonWidth + 15)
+      setContactAlign(buttonWidth + 15)
     }
     // left alignment
     if (currPos.y > -window.innerHeight){
@@ -170,9 +162,9 @@ function Menu(){
     else if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 100) {
       let temp = 1 - (-window.innerHeight - currPos.y) / 100
       setAboutTangent(temp)
-      let aboutAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 12.5) * (1 - temp)
-      setProjectsAlign(aboutAlign)
-      setContactAlign(aboutAlign)
+      let tempAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 12.5) * (1 - temp)
+      setProjectsAlign(tempAlign)
+      setContactAlign(tempAlign)
     }
     else if (currPos.y < -window.innerHeight - 100 && currPos.y > -window.innerHeight * 4 + 100) {
       setAboutTangent(0)
@@ -184,16 +176,34 @@ function Menu(){
     }
     else {
       setAboutTangent(1)
-      setHelloAlign(-buttonWidth * 2 - 17.5)
-      setAboutAlign(0)
+      setHelloAlign(-buttonWidth * 2 - 12.5)
+      setAboutAlign(5)
     }
 
     // PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS -- PROJECTS
     // projects section, from window Height * 3 to window height * 6
-    if (currPos.y > -window.innerHeight * 3 - 50) setProjectsTop(0)
-    else if (currPos.y < -window.innerHeight * 6 - 50) setProjectsTop(-window.innerHeight + 50)
+    if (currPos.y > -window.innerHeight * 3 - 50) {
+      setProjectsTop(0)
+    }
+    else if (currPos.y < -window.innerHeight * 6 - 50) {
+      setProjectsTop(-window.innerHeight + 50)
+    }
     else {
       setProjectsTop(Math.max((currPos.y + 50) / 3 + window.innerHeight, -window.innerHeight + 50 ))
+      setContactAlign(buttonWidth * 1.5 + 17.5)
+    }
+    // left alignment
+    if (currPos.y > -window.innerHeight * 3) {
+      setProjectsTangent(1)
+    }
+    else if (currPos.y < -window.innerHeight * 3 && currPos.y > -window.innerHeight * 3 - 100) {
+      let temp = 1 - (-window.innerHeight * 3 - currPos.y) / 100
+      setProjectsTangent(temp)
+      let tempAlign = (buttonWidth + 15) + (buttonWidth / 2) * (1 - temp)
+      setContactAlign(tempAlign)
+    }
+    else if (currPos.y < -window.innerHeight * 3 - 100 && currPos.y > -window.innerHeight * 5 + 100) { 
+      setProjectsTangent(0)
     }
 
     // CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT
