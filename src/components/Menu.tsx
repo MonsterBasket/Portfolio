@@ -159,17 +159,17 @@ function Menu(){
     if (currPos.y > -window.innerHeight){
       setAboutTangent(1)
     }
-    else if (currPos.y < -window.innerHeight && currPos.y > -window.innerHeight - 100) {
+    else if (currPos.y < -window.innerHeight && currPos.y >= -window.innerHeight - 100) {
       let temp = 1 - (-window.innerHeight - currPos.y) / 100
       setAboutTangent(temp)
       let tempAlign = (buttonWidth / 2 + 10) + (buttonWidth / 2.5 + 12.5) * (1 - temp)
       setProjectsAlign(tempAlign)
       setContactAlign(tempAlign)
     }
-    else if (currPos.y < -window.innerHeight - 100 && currPos.y > -window.innerHeight * 4 + 100) {
+    else if (currPos.y < -window.innerHeight - 100 && currPos.y >= -window.innerHeight * 4 + 100) {
       setAboutTangent(0)
     }
-    else if (currPos.y < -window.innerHeight * 4 + 100 && currPos.y > -window.innerHeight * 4) {
+    else if (currPos.y < -window.innerHeight * 4 + 100 && currPos.y >= -window.innerHeight * 4) {
       let temp = ((-window.innerHeight * 4 + 100 - currPos.y) / 100)
       setAboutTangent(temp)
       setHelloAlign((-buttonWidth * 1.5 - 5) - (buttonWidth / 2 + 2.5) * temp)
@@ -196,22 +196,58 @@ function Menu(){
     if (currPos.y > -window.innerHeight * 3) {
       setProjectsTangent(1)
     }
-    else if (currPos.y < -window.innerHeight * 3 && currPos.y > -window.innerHeight * 3 - 100) {
+    else if (currPos.y < -window.innerHeight * 3 && currPos.y >= -window.innerHeight * 3 - 100) {
       let temp = 1 - (-window.innerHeight * 3 - currPos.y) / 100
       setProjectsTangent(temp)
       let tempAlign = (buttonWidth + 15) + (buttonWidth / 2) * (1 - temp)
       setContactAlign(tempAlign)
     }
-    else if (currPos.y < -window.innerHeight * 3 - 100 && currPos.y > -window.innerHeight * 5 + 100) { 
+    else if (currPos.y < -window.innerHeight * 3 - 100 && currPos.y >= -window.innerHeight * 6 + 100) { 
       setProjectsTangent(0)
+    }
+    else if (currPos.y < -window.innerHeight * 6 + 100 && currPos.y >= -window.innerHeight * 6) {
+      let temp = ((-window.innerHeight * 6 + 100 - currPos.y) / 100)
+      setProjectsTangent(temp)
+      setHelloAlign((-buttonWidth * 2 - 17.5) - (buttonWidth / 2 + 2.5) * temp)
+      setAboutAlign((-buttonWidth / 2) * temp)
+    }
+    else {
+      setProjectsTangent(1)
+      setHelloAlign(-buttonWidth * 2.5 - 17.5)
+      setAboutAlign(-buttonWidth / 2)
+      setProjectsAlign(buttonWidth * 1.5 + 17.5)
     }
 
     // CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT -- CONTACT
     // contact section; from window height * 5 onwards, exaggerated movement as you can't scroll past the bottom section
     if (currPos.y > -window.innerHeight * 5 - 50) setContactTop(0)
-    else {
-      setContactTop(Math.max(((currPos.y + 50) / 5 + window.innerHeight) * 2.5, -window.innerHeight + 50 ))
+    else if (currPos.y < -window.innerHeight * 7 + 100) setContactTop(-window.innerHeight + 50)
+    else if (currPos.y < -window.innerHeight * 5 - 100 && currPos.y >= -window.innerHeight * 7 + 200) {
+      setContactTangent(0)
+      setContactTop(Math.max(((currPos.y + 100) / 5 + window.innerHeight) * 2.9, -window.innerHeight + 50))
     }
+    // left alignment
+    if (currPos.y > -window.innerHeight * 5) {
+      setContactTangent(1)
+    }
+    else if (currPos.y < -window.innerHeight * 5 && currPos.y >= -window.innerHeight * 5 - 100) {
+      setContactTangent(1 - (-window.innerHeight * 5 - currPos.y) / 100)
+    }
+    else if (currPos.y < -window.innerHeight * 7 + 200 && currPos.y >= -window.innerHeight * 7 + 100) {
+      let temp = ((-window.innerHeight * 7 + 200 - currPos.y) / 100)
+      setContactTangent(temp)
+      setHelloAlign((-buttonWidth * 2.5 - 20) - (buttonWidth / 2 + 2.5) * temp)
+      setAboutAlign((-buttonWidth / 2 - 2.5) - (buttonWidth / 2 + 2.5) * temp)
+      setProjectsAlign((buttonWidth * 1.5 + 15) - (buttonWidth / 2 + 2.5) * temp)
+      setContactAlign(buttonWidth * 2.5 + 12.5)
+    }
+    else {
+      setHelloAlign((-buttonWidth * 3 - 20))
+      setAboutAlign((-buttonWidth - 2.5))
+      setProjectsAlign((buttonWidth + 15))
+      setContactAlign(buttonWidth * 2.5 + 12.5)
+    }
+    
 
     // yep, this will be constantly setting state and aligning all buttons whenever you're scrolling...
     setAllLeft();
@@ -245,7 +281,7 @@ function Menu(){
     <a href="#projects" style={projectsStyle} className="menuButton projectsButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
       <div style={bottom} className='menuButtonPanel'>Projects</div>
-      <div style={back} className='menuButtonPanel'>{aboutTangent}</div>
+      <div style={back} className='menuButtonPanel'>Projects</div>
     </a>
     <a href="#contact" style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>
