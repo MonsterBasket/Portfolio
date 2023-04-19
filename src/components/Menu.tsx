@@ -41,8 +41,6 @@ function Menu(){
   const [projectsWidth, setProjectsWidth] = useState<number>((buttonWidth - 15) * projectsTangent + 15)
   const [contactWidth, setContactWidth] = useState<number>((buttonWidth - 15) * contactTangent + 15)
 
-  const [temp, setTemp] = useState<number>(0)
-
   window.addEventListener('resize', setAllLeft);
   
   function setAllLeft(){
@@ -252,7 +250,6 @@ function Menu(){
       setProjectsAlign((buttonWidth + 12.5))
       setContactAlign(buttonWidth * 3 + 30)
     }
-    setTemp(currPos.y)
 
     // yep, this will be constantly setting state and aligning all buttons whenever you're scrolling...
     setAllLeft();

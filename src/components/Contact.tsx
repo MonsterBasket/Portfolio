@@ -1,8 +1,9 @@
 function Contact(){
-  return <section id="contact">
-    <article>
+  return <section id="contactTop">
+    <article style={{height: '100%'}}>
       o
     </article>
+    <div id="contact"></div>
   </section>
 }
 

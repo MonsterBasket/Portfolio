@@ -1,0 +1,58 @@
+.proAll{
+  --size: min(50vw, 80vh);
+  position: absolute;
+  border-radius: 30px;
+  background-color: red;
+}
+.proFront{
+  box-shadow: inset 0 0 15px rgb(247, 115, 115);
+  top: 200px;
+  width: var(--size);
+  height: var(--size);
+  left: calc(50% - var(--size) / 2);
+}
+.proFrontLeft{
+  box-shadow: inset 0 0 30px rgb(231, 50, 50);
+  top: 220px;
+  width: calc(var(--size) * 0.8);
+  height: calc(var(--size) * 0.8);
+  left: calc(50% - var(--size) * 0.9);
+  opacity: 0.75;
+  z-index: -1
+}
+.proFrontRight{
+  box-shadow: inset 0 0 30px rgb(231, 50, 50);
+  top: 220px;
+  width: calc(var(--size) * 0.8);
+  height: calc(var(--size) * 0.8);
+  right: calc(50% - var(--size) * 0.9);
+  opacity: 0.75;
+  z-index: -1
+}
+.proBackLeft{
+  box-shadow: inset 0 0 30px maroon;
+  top: 170px;
+  width: calc(var(--size) * 0.65);
+  height: calc(var(--size) * 0.65);
+  left: calc(50% - var(--size) * 0.75);
+  opacity: 0.5;
+  z-index: -2
+}
+.proBackRight{
+  box-shadow: inset 0 0 30px maroon;
+  top: 170px;
+  width: calc(var(--size) * 0.65);
+  height: calc(var(--size) * 0.65);
+  right: calc(50% - var(--size) * 0.75);
+  opacity: 0.5;
+  z-index: -2
+}
+.proBack{
+  box-shadow: inset 0 0 30px black;
+  top: 140px;
+  width: calc(var(--size) * 0.5);
+  height: calc(var(--size) * 0.5);
+  left: calc(50% - var(--size) * 0.25);
+  opacity: 0.25;
+  z-index: -3
+}
