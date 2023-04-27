@@ -1,7 +1,7 @@
 function Contact(){
   return <section id="contactTop">
     <article style={{height: '100%'}}>
-      o
+      Contact
     </article>
     <div id="contact"></div>
   </section>

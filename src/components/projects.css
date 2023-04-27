@@ -1,58 +1,60 @@
-.proAll{
+.project, .ontop{
   --size: min(50vw, 80vh);
   position: absolute;
   border-radius: 30px;
-  background-color: red;
 }
-.proFront{
+.project{
+  background-color: red;
+  transition: 0.5s;
+}
+.project.front{
   box-shadow: inset 0 0 15px rgb(247, 115, 115);
-  top: 200px;
+  top: calc(50vh - var(--size) / 2);
   width: var(--size);
   height: var(--size);
   left: calc(50% - var(--size) / 2);
 }
-.proFrontLeft{
-  box-shadow: inset 0 0 30px rgb(231, 50, 50);
-  top: 220px;
+.frontLeft, .frontRight{
+  top: calc(52vh - var(--size) / 2);
   width: calc(var(--size) * 0.8);
   height: calc(var(--size) * 0.8);
+  z-index: -1;
+}
+.frontLeft{
   left: calc(50% - var(--size) * 0.9);
-  opacity: 0.75;
-  z-index: -1
 }
-.proFrontRight{
+.frontRight{
+  left: calc(50% + var(--size) * 0.1);
+}
+.project.frontLeft, .project.frontRight{
   box-shadow: inset 0 0 30px rgb(231, 50, 50);
-  top: 220px;
-  width: calc(var(--size) * 0.8);
-  height: calc(var(--size) * 0.8);
-  right: calc(50% - var(--size) * 0.9);
   opacity: 0.75;
-  z-index: -1
 }
-.proBackLeft{
-  box-shadow: inset 0 0 30px maroon;
-  top: 170px;
+.backLeft, .backRight{
+  top: calc(47vh - var(--size) / 2);
   width: calc(var(--size) * 0.65);
   height: calc(var(--size) * 0.65);
+  z-index: -2;
+}
+.backLeft{
   left: calc(50% - var(--size) * 0.75);
-  opacity: 0.5;
-  z-index: -2
 }
-.proBackRight{
+.backRight{
+  left: calc(50% + var(--size) * 0.1);
+}
+.project.backLeft, .project.backRight{
   box-shadow: inset 0 0 30px maroon;
-  top: 170px;
-  width: calc(var(--size) * 0.65);
-  height: calc(var(--size) * 0.65);
-  right: calc(50% - var(--size) * 0.75);
   opacity: 0.5;
-  z-index: -2
 }
-.proBack{
-  box-shadow: inset 0 0 30px black;
-  top: 140px;
+.back{
+  /* top: 140px; */
+  top: calc(44vh - var(--size) / 2);
   width: calc(var(--size) * 0.5);
   height: calc(var(--size) * 0.5);
   left: calc(50% - var(--size) * 0.25);
+  z-index: -3;
+}
+.project.back{
+  box-shadow: inset 0 0 30px black;
   opacity: 0.25;
-  z-index: -3
 }

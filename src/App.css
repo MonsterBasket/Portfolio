@@ -86,6 +86,7 @@ section{
 article{
   position: sticky;
   top: 5vh;
+  height: 95vh;
 }
 #about{
   background-color: red;
