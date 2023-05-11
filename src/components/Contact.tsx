@@ -1,8 +1,10 @@
 function Contact(){
   return <section id="contactTop">
-    <article style={{height: '100%'}}>
-      Contact
-    </article>
+    <div style={{height: '100%'}}>
+      <article>
+        Contact
+      </article>
+    </div>
     <div id="contact"></div>
   </section>
 }
