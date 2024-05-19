@@ -1,5 +1,5 @@
 import './projects.css'
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function Projects(){
   const [pagePos, setPagePos] = useState<string[]>(["front","frontRight","backRight","back","backLeft","frontLeft"])
@@ -14,7 +14,7 @@ function Projects(){
     setPagePos([pagePos[num(0)], pagePos[num(1)], pagePos[num(2)], pagePos[num(3)], pagePos[num(4)], pagePos[num(5)]])
   }
   
-  return <section id="projects">
+  return <section id="Projects">
     <article>
       Projects
       <article className={`project ${pagePos[0]}`}></article>

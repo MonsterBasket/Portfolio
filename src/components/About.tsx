@@ -1,5 +1,8 @@
+import React from "react";
+
 function About(){
-  return <section id="about">
+
+  return <section id="About">
     <article>
     About
       <p>
