@@ -25,14 +25,30 @@ function Hello(){
     };
   }, []);
 
+  useEffect(() => {
+    // callback function to call when event triggers
+    const onPageLoad = () => {
+      console.log('page loaded');
+      updateScreen();
+    };
+
+    // Check if the page has already loaded
+    if (document.readyState === 'complete') {
+      onPageLoad();
+    } else {
+      window.addEventListener('load', onPageLoad, false);
+      // Remove the event listener when component unmounts
+      return () => window.removeEventListener('load', onPageLoad);
+    }
+  }, []);
+
   function updateScreen(){  // Currently only resizes correctly when scrolled all the way to the top
     const LPcoords = leftPanel.current?.getBoundingClientRect()
-      if (LPcoords && rotate == 0) {
+      if (LPcoords) {
         setLPL(-LPcoords.left)
         setBPT(-LPcoords.top)
         setRPL(0 - LPcoords.left - LPcoords.width)
       }
-      setTimeout(() => {updateScreen()}, 200) // brute forcing a load issue with the hello boxes online
     // setLPL(-window.innerWidth * 0.1)
   }
 
@@ -68,7 +84,7 @@ function Hello(){
     }
   })
 
-  // The 0.0001 below is to fight a weird bug.  When two divs with perspective perfectly align rotation
+  // The 0.0001 below is to fight a weird bug.  When two divs with perspective perfectly align rotation it adds a sort of overlap
   const frontRight = { transform: `rotateX(${-rotate * 180 + 0.0001}deg) translateZ(6vw)`, filter: `brightness(${2 * -rotate + 1})`, backgroundPosition: `${rightPanelLeft}px ${bothPanelTop}px` };
   const bottomRight = { transform: `rotateX(${-rotate * 180 + 90.0001}deg) translateZ(6vw)`, filter: `brightness(${2 * -rotate + 2})`, backgroundPosition: `${rightPanelLeft}px ${bothPanelTop}px` };
   const backRight = { transform: `rotateX(${-rotate * 180 - 179.9999}deg) translateZ(6vw)`, filter: `brightness(${2 * -rotate + 3})`, backgroundPosition: `${rightPanelLeft}px ${bothPanelTop}px` };
