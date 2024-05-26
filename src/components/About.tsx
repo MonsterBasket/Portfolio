@@ -4,8 +4,12 @@ function About(){
 
   return <section id="About">
     <article>
-    About
+      <h3>Outdated filler text</h3>
       <p>
+        Please note that this folio site is a work in progress, the site itself is a demonstration of my technical ability, while the majority of the content is filler.
+        <br/><br/>
+        That includes the below.  I'll rewrite this soon, but this is what I was thinking a year ago:
+        <br/><br/>
         Over a decade ago I finished a degree in 3D animation. I learnt two very important things during my course:
         <br/><br/>
         1: I LOVE the technical side of animation, and<br/>

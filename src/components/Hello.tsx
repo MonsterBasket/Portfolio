@@ -15,16 +15,16 @@ function Hello(){
   const [leftPanelLeft, setLPL] = useState<number>(0)
   const [bothPanelTop, setBPT] = useState<number>(0)
   const [rightPanelLeft, setRPL] = useState<number>(0)
-  const [bs, sbs] = useState<number>(0)
 
 
+  useEffect(() => updateScreen, [])
   useEffect(() => {
     window.addEventListener('resize', updateScreen);
     return () => {
       window.removeEventListener('resize', updateScreen);
     };
   }, []);
-  useEffect(() => updateScreen, [])
+
   function updateScreen(){  // Currently only resizes correctly when scrolled all the way to the top
     const LPcoords = leftPanel.current?.getBoundingClientRect()
       if (LPcoords) {

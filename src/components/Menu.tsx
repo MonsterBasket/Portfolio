@@ -6,13 +6,15 @@ type Props = {
   setButtonWidth: (val: number) => void;
   buttonOpacity: number;
   setButtonOpacity: (val: number) => void;
+  setTurnToCheat: (val: number) => void;
 };
-export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setButtonOpacity}:Props){
+export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setButtonOpacity, setTurnToCheat}:Props){
 
   // Used for the cylinder effect in the hello section, pushes the menu button container to the bottom, while transforming rotate and scale along the way
   const [menuTop, setMenuTop] = useState<number>(0)
   const [menuScale, setMenuScale] = useState<number>(1)
   const [buttonRotate, setButtonRotate] = useState<number>(0)
+  const [contZ, setContZ] = useState<number>(0)
 
   // currently not accounting for width of vertical scroll bar - I'm hoping to replace this later anyway
   // This is the calculation described in the above two statements, that sets the overall left position of the buttons
@@ -20,6 +22,7 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
   const [aboutLeft, setAboutLeft] = useState<number>((window.innerWidth / 2 - (buttonWidth + 12.5)) + 10)
   const [projectsLeft, setProjectsLeft] = useState<number>((window.innerWidth / 2 - 7.5) + 10)
   const [contactLeft, setContactLeft] = useState<number>((window.innerWidth / 2 + (buttonWidth -2.5)) + 10)
+  const [scrollPos, setScrollPos] = useState<number>(0)
 
   useEffect(() => {
     window.addEventListener('resize', setAllLeft);
@@ -31,15 +34,21 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
   function setAllLeft(){
     let buttonWidth:number = window.innerWidth > 500 ? 100 : window.innerWidth / 5 // local variable to avoid setstate delay
     setButtonWidth(buttonWidth)
-    setHelloLeft((window.innerWidth / 2 - (buttonWidth * 2 + 17.5)) + 5)
-    setAboutLeft((window.innerWidth / 2 - (buttonWidth + 12.5)) + 5)
-    setProjectsLeft((window.innerWidth / 2 - 7.5) + 5)
-    setContactLeft((window.innerWidth / 2 + (buttonWidth -2.5)) + 5)
+    setHelloLeft((window.innerWidth / 2 - (buttonWidth * 2 + 17.5)) + 10)
+    setAboutLeft((window.innerWidth / 2 - (buttonWidth + 12.5)) + 10)
+    setProjectsLeft((window.innerWidth / 2 - 7.5) + 10)
+    setContactLeft((window.innerWidth / 2 + (buttonWidth -2.5)) + 10)
     }
+
+  function turnToCheat(page:number){
+    if (scrollPos < 1.5 * -window.innerHeight) setTurnToCheat(page)
+    else setTurnToCheat(page+10)
+  }
 
   useScrollPosition(({ prevPos, currPos }) => {
     // window limit sets the first section scroll limit to the lesser of window height or 500px
     let windowLimit: number = Math.min(window.innerHeight, 500);
+    setScrollPos(currPos.y);
     if (currPos.y === 0) { // top of screen / not scrolled
       setMenuTop(0);
       setMenuScale(1);
@@ -53,6 +62,7 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
       // Final equation: radius - scrollPos * windowHeight
       setMenuTop(1 - (currPos.y / -windowLimit) * (-window.innerHeight + 50))
       setButtonRotate(currPos.y / -windowLimit)
+      setContZ(0);
       setAllLeft();
       if (currPos.y / -windowLimit < 0.5) {
         // b = scale of buttons
@@ -67,6 +77,7 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
       setMenuTop(window.innerHeight - 50);
       setMenuScale(1);
       setButtonRotate(1);
+      setContZ(2);
     }
 
     if (currPos.y < -window.innerHeight){
@@ -103,35 +114,36 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
   const bottom = { transform: `rotateX(${buttonRotate * 180 - 90}deg) translateZ(15px)`, filter: `brightness(${2 * buttonRotate})` };
   const back = { transform: `rotateX(${buttonRotate * 180 - 180}deg) translateZ(15px)`, filter: `brightness(${2 * buttonRotate - 1})` };
 
-
+  // The buttons were originally "Hello, About, Projects, Contact", they're now "About, Projects, Animation, Contact"
+  // Too many variables and css classes to rename for something that may change again in the future.
 
   
   return <div style={{ 
       top:`${menuTop}px`,
       transform: `scale(${menuScale})`,
-      opacity: `${buttonOpacity}`
+      opacity: `${buttonOpacity < 1 ? 0 : 1}`, // a clean cut works better than a transition, but I'm still using this var for the tab transformation
+      zIndex: `${contZ}`
       }} id="menu">
-    <a href="#Hello" style={helloStyle} className="menuButton helloButton">
-      <div style={front} className='menuButtonPanel'>Hello</div>
-      <div style={bottom} className='menuButtonPanel'>Hello</div>
-      <div style={back} className='menuButtonPanel'>Hello</div>
+        <div style={{display:'none'}}>If you're poking around here in the HTML you'll see the button names are wrong.  I changed them around and can't be assed changing all the variable names that control the positions.</div>
+    <a href="#About" onClick={() => turnToCheat(0)} style={helloStyle} className="menuButton helloButton">
+      <div style={front} className='menuButtonPanel'>About Me</div>
+      <div style={bottom} className='menuButtonPanel'>About Me</div>
+      <div style={back} className='menuButtonPanel'>About Me</div>
     </a>
-    <a href="#About" style={aboutStyle} className="menuButton aboutButton">
-      <div style={front} className='menuButtonPanel'>About</div>
-      <div style={bottom} className='menuButtonPanel'>About</div>
-      <div style={back} className='menuButtonPanel'>About</div>
-    </a>
-    <a href="#Projects" style={projectsStyle} className="menuButton projectsButton">
+    <a href="#Projects" onClick={() => turnToCheat(1)} style={aboutStyle} className="menuButton aboutButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
       <div style={bottom} className='menuButtonPanel'>Projects</div>
       <div style={back} className='menuButtonPanel'>Projects</div>
     </a>
-    <a href="#Contact" style={contactStyle} className="menuButton contactButton">
+    <a href="#Animation" onClick={() => turnToCheat(2)} style={projectsStyle} className="menuButton projectsButton">
+      <div style={front} className='menuButtonPanel'>Animation</div>
+      <div style={bottom} className='menuButtonPanel'>Animation</div>
+      <div style={back} className='menuButtonPanel'>Animation</div>
+    </a>
+    <a href="#Contact" onClick={() => turnToCheat(3)} style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>
       <div style={bottom} className='menuButtonPanel'>Contact</div>
       <div style={back} className='menuButtonPanel'>Contact</div>
     </a>
   </div>
 }
-
-// export default Menu;

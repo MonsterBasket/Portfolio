@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import './App.css';
+import './components/CSS/App.css';
 import About from './components/About';
+import Animation from './components/Animation'
 import Contact from './components/Contact';
 import Hello from './components/Hello';
 import Menu from './components/Menu';
@@ -10,20 +11,21 @@ import Tabs from './components/Tabs';
 function App() {
 
   const [buttonWidth, setButtonWidth] = useState<number>(window.innerWidth > 500 ? 100 : window.innerWidth / 5)
-  const [buttonOpacity, setButtonOpacity] = useState<number>(1)   
+  const [buttonOpacity, setButtonOpacity] = useState<number>(1)
+  const [turnToCheat, setTurnToCheat] = useState<number>(0)
 
   return (
     <div className="App">
 
       <Hello />
-      <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} names={["Hello", "About", "Projects", "Contact"]}>
-        <About />
+      <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About Me", "Projects", "Animation", "Contact"]}>
         <About />
         <Projects />
+        <Animation />
         <Contact />
       </Tabs>
 
-      <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity}/>
+      <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>
     </div>
   );
 }

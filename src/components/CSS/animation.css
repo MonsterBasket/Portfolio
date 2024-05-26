@@ -1,0 +1,107 @@
+#Animation article, .descContainer{
+  --size: min(60vh, 80vw);
+}
+#Animation article{
+  width: 100%;
+  padding-top: 0px;
+  overflow: hidden;
+}
+
+iframe{
+  border: 0;
+}
+.animation, .ontop{
+  position: absolute;
+  border-radius: 30px;
+  background-clip: padding-box;
+}
+.animation{
+  background-color: #b38046;
+  transition: 0.5s;
+  overflow: hidden;
+}
+#Animation .animation.front{
+  box-shadow: inset 0 0 15px #462d12;
+  top: 10%;
+  width: var(--size);
+  height: var(--size);
+  left: calc(50% - var(--size) / 2);
+  z-index: 4
+}
+#Animation .frontLeft, #Animation .frontRight{
+  top: 7%; /*calc(42vh + 50px - var(--size) / 2);*/
+  width: calc(var(--size) * 0.8);
+  height: calc(var(--size) * 0.8);
+  z-index: 3;
+}
+#Animation .frontLeft{
+  left: calc(50% - var(--size) * 1.05);
+}
+#Animation .frontRight{
+  left: calc(50% + var(--size) * 0.25);
+}
+#Animation .animation.frontLeft, #Animation .animation.frontRight{
+  box-shadow: inset 0 0 30px #271808;
+  opacity: 0.75;
+}
+#Animation .backLeft, #Animation .backRight{
+  top: 5%; /*calc(37vh + 50px - var(--size) / 2);*/
+  width: calc(var(--size) * 0.65);
+  height: calc(var(--size) * 0.65);
+  z-index: 2;
+}
+#Animation .backLeft{
+  left: calc(50% - var(--size) * 0.75);
+}
+#Animation .backRight{
+  left: calc(50% + var(--size) * 0.1);
+}
+#Animation .animation.backLeft, #Animation .animation.backRight{
+  box-shadow: inset 0 0 30px #1b0f02;
+  opacity: 0.5;
+}
+#Animation .back{
+  top: 3%;
+  width: calc(var(--size) * 0.5);
+  height: calc(var(--size) * 0.5);
+  left: calc(50% - var(--size) * 0.25);
+  z-index: 1;
+}
+#Animation .animation.back{
+  box-shadow: inset 0 0 30px black;
+  opacity: 0.25;
+}
+.descContainer{
+  position: absolute;
+  /* top: calc(40vh + 70px + min(50vw, 80vh) / 2); */
+  top: calc(var(--size) + 15%);
+  bottom: 10px;
+  width: 100%;
+  left: 0%;
+  height: auto;
+  text-align: center;
+  overflow: hidden;
+}
+.frontD, .frontRightD, .backRightD, .backD, .backLeftD, .frontLeftD{
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  transition: 0.5s;
+}
+.frontD{
+  left: 10%;
+  opacity: 1;
+}
+.frontRightD, .backRightD{
+  left: 100%;
+  opacity: 0;
+}
+.backD{
+  left: 10%;
+  top: 0%;
+  opacity: 0;
+}
+.frontLeftD, .backLeftD{
+  left: -100%; 
+  opacity: 0;
+}
