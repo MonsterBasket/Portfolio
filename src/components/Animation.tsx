@@ -30,7 +30,7 @@ function Animation(){
   const hair:ReactElement = <iframe width="100%" height="100%" src="https://www.youtube.com/embed/D81XrEyneAA?si=jFrUNLEuW4z46LJd" title="MoCap Hair" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const hairDesc:string = "This was a group project that was supposed to be MoCap but ended up being mostly rotoscope.  The 3D modelling was done by the other members, the mocap/roto was me, not sure if that's a self compliment or insult though..."
   const disclaimer:ReactElement = <img src={disclaimerImg} style={{width:"100%"}}></img>
-  const disclaimerDesc:ReactElement = <span>Please note, all the work in this section is close to 15 years old.  The website itself is my portfolio, this is just filler content from a previous life.<br/><br/>I originally made this carousel for the menu in my game Monster Basket which you can see on my projects page.</span>
+  const disclaimerDesc:ReactElement = <span>Please note, all the work in this section is close to 15 years old.  This website itself is my portfolio, this is just filler content from a previous life.<br/><br/>I originally made this carousel for the menu in my game Monster Basket which you can see on my projects page.</span>
   
   // This is all good, but 
 

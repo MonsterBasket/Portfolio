@@ -6,7 +6,7 @@ function About(){
     <article>
       <h3>Outdated filler text</h3>
       <p>
-        Please note that this folio site is a work in progress, the site itself is a demonstration of my technical ability, while the majority of the content is filler.
+        Please note that this folio site is a work in progress, the site itself is my folio, as well as a handful of projects in the Projects section.
         <br/><br/>
         That includes the below.  I'll rewrite this soon, but this is what I was thinking a year ago:
         <br/><br/>

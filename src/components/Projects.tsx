@@ -37,11 +37,11 @@ function Projects(){
 
   // const disclaimer:ReactElement = <img src={disclaimerImg} style={{width:"100%"}}></img>
 
-  const project1Link:ReactElement = <h2><a href="https://monsterbasket.com.au" target="_blank">Monster Basket</a></h2>
+  const project1Link:ReactElement = <h2>Monster Basket</h2>
   const project2Link:ReactElement = <h2><a href="https://monsterbasket.github.io/TypingGame/" target="_blank">Typing Game</a></h2>
   const project3Link:ReactElement = <h2><a href="https://github.com/MonsterBasket/battleship" target="_blank">Battleship</a></h2>
 
-  const project1Desc:ReactElement = <span>This was my "pièce de résistance" of my bootcamp.  A lot to be proud of despite being a bit janky and buggy.  On top of that the server is constantly out of RAM so it's pretty broken right now.  I'll take a look when this folio site is finished.</span>
+  const project1Desc:ReactElement = <span>This was my "pièce de résistance" of my bootcamp.  A lot to be proud of despite being a bit janky and buggy.  On top of that the server is constantly out of RAM so it's pretty broken right now.  I've taken it off-line for now and I'll take a look when this folio site is finished.</span>
   const project2Desc:ReactElement = <span>A JavaScript typing game. Choose a theme and type the words that appear on the screen before they reach the end. Words and background image come from separate APIs and are generated based on the theme you choose.</span>
   const project3Desc:ReactElement = <span>Battleship made in Ruby, you can't play it because it's almost impossible to host a pure Ruby app, but feel free to look at the code in the link provided.</span>
 

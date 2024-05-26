@@ -27,11 +27,12 @@ function Hello(){
 
   function updateScreen(){  // Currently only resizes correctly when scrolled all the way to the top
     const LPcoords = leftPanel.current?.getBoundingClientRect()
-      if (LPcoords) {
+      if (LPcoords && rotate == 0) {
         setLPL(-LPcoords.left)
         setBPT(-LPcoords.top)
         setRPL(0 - LPcoords.left - LPcoords.width)
       }
+      setTimeout(() => {updateScreen()}, 200) // brute forcing a load issue with the hello boxes online
     // setLPL(-window.innerWidth * 0.1)
   }
 
@@ -78,7 +79,7 @@ function Hello(){
 
   return <section id="Hello" style={{ backgroundImage: `url(${trees})` }}>
     <div className="hellobg" style={{ backgroundImage: `url(${penguin})`, opacity: opacity2 }}></div>
-    <div className="hellobg" style={{ backgroundImage: `url(${sunbeam})`, opacity: opacity1 }}></div>
+    <div className="hellobg" style={{ backgroundImage: `url(${sunbeam})`, opacity: opacity1 }} onLoad={updateScreen}></div>
     <div className="spinContainer">
       <div className="helloSpinLeft">
         <div style={front} className='helloSpinPanel panel1' ref={leftPanel}> </div>

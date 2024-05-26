@@ -14,10 +14,12 @@
 .projLeftCover{
   background: linear-gradient(0deg, #8e7d69 0%, #8e7d6900 20%),
               linear-gradient(180deg, #8e7d69 0%, #8e7d6900 20%);
+  pointer-events: none;
 }
 .projTopCover{
   background: linear-gradient(90deg, #8e7d69 0%, #8e7d6900 20%),
               linear-gradient(270deg, #8e7d69 0%, #8e7d6900 20%);
+  pointer-events: none;
 }
 .projTop{
   height: 50%;
