@@ -79,6 +79,8 @@ function Projects(){
             <div className={`projButton active${position[0]}`} onClick={() => change(1)}></div>
             <div className={`projButton active${position[2]}`} onClick={() => change(2)}></div>
           </div>
+          <div className="projUpButton" onClick={() => change(position[0] -1)}></div>
+          <div className="projDownButton" onClick={() => change(position[2] -1)}></div>
         </div>
   </section>
 }

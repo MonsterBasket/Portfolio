@@ -82,8 +82,10 @@
 .projRight .desc3{
   top: -100vh;
 }
-.projTopRule{
+.projTopRule, .projLeftRule, .projButtonBack, .projUpButton, .projDownButton{
   position: absolute;
+}
+.projTopRule{
   top: 50%;
   left: 15%;
   width: 70%;
@@ -91,7 +93,6 @@
   box-shadow: 0 0 2px 0.5px black;
 }
 .projLeftRule{
-  position: absolute;
   top: 15%;
   left: 50%;
   height: 70%;
@@ -99,7 +100,6 @@
   box-shadow: 0 0 2px 0.5px black;
 }
 .projButtonBack{
-  position: absolute;
   background: #8e7d69;
   width: 150px;
   height: 20px;
@@ -127,4 +127,50 @@
 }
 .projButton.active1{
   opacity: 1;
+}
+.projUpButton, .projDownButton{
+  width: 30px;
+  height: 30px;
+  box-shadow: 2px -2px 1px 0.5px rgba(255, 255, 255, 0.6);
+  animation: 1s alternate-reverse infinite ease-in-out;
+}
+.projUpButton:hover, .projDownButton:hover{
+  box-shadow: 2px -2px 1px 1.5px rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+.projLeftRule .projUpButton{
+  top: -10%;
+  left: -15px;
+  transform: rotateZ(-45deg);
+  animation-name: buttonBounce1;
+}
+@keyframes buttonBounce1{
+  0%, 50%, 100%  {top: -10%;} 25% {top: -12%;}
+}
+.projLeftRule .projDownButton{
+  bottom: -10%;
+  left: -15px;
+  transform: rotateZ(135deg);
+  animation-name: buttonBounce2;
+}
+@keyframes buttonBounce2{
+  0%, 50%, 100%  {bottom: -10%;} 25% {bottom: -12%;}
+}
+.projTopRule .projUpButton{
+  top: -15px;
+  left: -10%;
+  transform: rotateZ(-135deg);
+  animation-name: buttonBounce3;
+}
+@keyframes buttonBounce3{
+  0%, 50%, 100%  {left: -10%;} 25% {left: -12%;}
+}
+.projTopRule .projDownButton{
+  bottom: -15px;
+  right: -10%;
+  transform: rotateZ(45deg);
+  animation-name: buttonBounce4;
+}
+@keyframes buttonBounce4{
+  0%, 50%, 100%  {right: -10%;} 25% {right: -12%;}
 }
