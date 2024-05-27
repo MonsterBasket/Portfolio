@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './components/CSS/App.css';
+import Splash from './components/Splash'
 import About from './components/About';
 import Animation from './components/Animation'
 import Contact from './components/Contact';
@@ -16,16 +17,19 @@ function App() {
 
   return (
     <div className="App">
+      <Splash>
+        <>
+          <Hello />
+          <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About Me", "Projects", "Animation", "Contact"]}>
+            <About />
+            <Projects />
+            <Animation />
+            <Contact />
+          </Tabs>
 
-      <Hello />
-      <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About Me", "Projects", "Animation", "Contact"]}>
-        <About />
-        <Projects />
-        <Animation />
-        <Contact />
-      </Tabs>
-
-      <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>
+          <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>
+        </>
+      </Splash>
     </div>
   );
 }
