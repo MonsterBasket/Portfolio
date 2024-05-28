@@ -28,7 +28,6 @@ function Hello(){
   useEffect(() => {
     // callback function to call when event triggers
     const onPageLoad = () => {
-      console.log('page loaded');
       updateScreen();
     };
 
@@ -45,9 +44,12 @@ function Hello(){
   function updateScreen(){  // Currently only resizes correctly when scrolled all the way to the top
     const LPcoords = leftPanel.current?.getBoundingClientRect()
       if (LPcoords) {
-        setLPL(-LPcoords.left)
-        setBPT(-LPcoords.top)
-        setRPL(0 - LPcoords.left - LPcoords.width)
+        // setLPL(-LPcoords.left)
+        setLPL(document.body.clientWidth * -0.1)
+        // setBPT(-LPcoords.top)
+        setBPT(window.innerHeight * -0.5 + (document.body.clientWidth * 0.06))
+        // setRPL(-LPcoords.left - LPcoords.width)
+        setRPL(document.body.clientWidth * -0.1 - (document.body.clientWidth * 0.2))
       }
     // setLPL(-window.innerWidth * 0.1)
   }
@@ -91,7 +93,7 @@ function Hello(){
   const front = { transform: `rotateX(${rotate * 180}deg) translateZ(6vw)`, filter: `brightness(${2 * rotate + 1})`, backgroundPosition: `${leftPanelLeft}px ${bothPanelTop}px`};
   const bottom = { transform: `rotateX(${rotate * 180 - 90}deg) translateZ(6vw)`, filter: `brightness(${2 * rotate})`, backgroundPosition: `${leftPanelLeft}px ${bothPanelTop}px` };
   const back = { transform: `rotateX(${rotate * 180 - 180}deg) translateZ(6vw)`, filter: `brightness(${2 * rotate - 1})`, backgroundPosition: `${leftPanelLeft}px ${bothPanelTop}px` };
-  const right = { transform: `rotateY(90deg) rotateZ(${rotate * 180}deg)`}
+  const right = { transform: `rotateY(90deg) rotateZ(${rotate * 180}deg)`, opacity: rotate * 180 % 90 ? 1 : 0 }
 
   return <section id="Hello" style={{ backgroundImage: `url(${trees})` }}>
     <div className="hellobg" style={{ backgroundImage: `url(${penguin})`, opacity: opacity2 }}></div>

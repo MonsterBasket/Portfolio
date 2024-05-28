@@ -47,6 +47,12 @@ function Animation(){
       <div onClick={()=> move(2)} className="backLeft ontop"></div>
       <div onClick={()=> move(-2)} className="backRight ontop"></div>
       <div onClick={()=> move(-3)} className="back ontop"></div>
+      <div className="animLeftButtonContainer" onClick={() => move(1)}>
+        <div className="animLeftButton"></div>
+      </div>
+      <div className="animRightButtonContainer" onClick={() => move(-1)}>
+        <div className="animRightButton"></div>
+      </div>
     </article>
     <div className="descContainer">
       <div className={`${descPos[0]}`}>{disclaimerDesc}</div>

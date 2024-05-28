@@ -135,7 +135,7 @@
   animation: 1s alternate-reverse infinite ease-in-out;
 }
 .projUpButton:hover, .projDownButton:hover{
-  box-shadow: 2px -2px 1px 1.5px rgba(255, 255, 255, 0.6);
+  box-shadow: 2px -2px 1px 1.5px rgba(255, 255, 255, 1);
   cursor: pointer;
 }
 .projLeftRule .projUpButton{
@@ -156,7 +156,7 @@
 @keyframes buttonBounce2{
   0%, 50%, 100%  {bottom: -10%;} 25% {bottom: -12%;}
 }
-.projTopRule .projUpButton{
+.projUpButton{
   top: -15px;
   left: -10%;
   transform: rotateZ(-135deg);
@@ -165,7 +165,7 @@
 @keyframes buttonBounce3{
   0%, 50%, 100%  {left: -10%;} 25% {left: -12%;}
 }
-.projTopRule .projDownButton{
+.projDownButton{
   bottom: -15px;
   right: -10%;
   transform: rotateZ(45deg);

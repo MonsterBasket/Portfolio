@@ -27,7 +27,6 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
       quickTurn = true;
       //skip animation and just change z index?
     }
-    console.log(page)
     if (tab[page] != "Front"){ //clicking on front tab does nothing
       let temptab:string[] = tab;
       for (let i = 0; i < 4; i++) {

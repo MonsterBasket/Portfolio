@@ -105,3 +105,48 @@ iframe{
   left: -100%; 
   opacity: 0;
 }
+.animLeftButtonContainer, .animRightButtonContainer{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  top: 50%;
+  z-index: 4;
+  /* background: #d8af7f; */
+  cursor: pointer;
+}
+.animLeftButtonContainer{
+  left: 5%;
+}
+.animRightButtonContainer{
+  right: 5%;
+}
+.animLeftButton, .animRightButton{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: 3px -3px 1.5px 0.5px rgba(255, 255, 255, 0.75);
+  animation: 1s alternate-reverse infinite ease-in-out;
+}
+.animLeftButtonContainer:hover .animLeftButton, .animRightButton:hover{
+  box-shadow: 3px -3px 2px 1.5px rgba(255, 255, 255);
+}
+.animLeftButton{
+  transform: rotateZ(-135deg);
+  left: 18px;
+  animation-name: animLeftBounce;
+}
+@keyframes animLeftBounce{
+  0%, 50%, 100%  {left: 22px;} 25% {left: 18px;}
+}
+.animRightButton{
+  transform: rotateZ(45deg);
+  right: 20px;
+  animation-name: animRightBounce;
+}
+@keyframes animRightBounce{
+  0%, 50%, 100%  {right: 22px;} 25% {right: 18px;}
+}

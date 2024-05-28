@@ -86,8 +86,8 @@ html{
   width: 12vw;
   height: 12vw;
   right: -6vw;
-  background-color: darkgreen;
-}
+  background: rgb(96,72,45);
+  background: radial-gradient(circle, rgba(96,72,45,1) 0%, rgba(120,100,78,1) 53%, rgba(96,72,45,1) 63%, rgba(120,100,78,1) 73%, rgba(96,72,45,1) 79%, rgba(120,100,78,1) 85%, rgba(96,72,45,1) 91%, rgba(120,100,78,1) 96%, rgba(96,72,45,1) 100%);}
 #Hello{
   background-color: green;
   padding: 0 0 30vh 0;
