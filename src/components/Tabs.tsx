@@ -1,5 +1,4 @@
-import React, { Children, ReactComponentElement, useEffect, useRef, useState } from "react"
-import { forEachChild } from "typescript";
+import React, { useEffect, useState } from "react"
 
 type Props = {
   buttonWidth: number;
@@ -21,10 +20,14 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
 
 
   function turnTo(page:number){
-    if (turnToCheat >= 10){
-      page = turnToCheat - 10
+    document.documentElement.scrollTo(0, document.documentElement.scrollHeight)
+    let quickTurn:boolean = false;
+    if (page >= 10){
+      page -= 10
+      quickTurn = true;
       //skip animation and just change z index?
     }
+    console.log(page)
     if (tab[page] != "Front"){ //clicking on front tab does nothing
       let temptab:string[] = tab;
       for (let i = 0; i < 4; i++) {
@@ -36,7 +39,7 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
           temptab[i] = "2"
         }
       }
-      if (turnToCheat >= 10){
+      if (quickTurn){
         temptab[page] = "Front"
         setTab([...temptab])
       }
@@ -55,22 +58,24 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
   return (
     <div id="tabSection">
       <div className="tabTopBack" style={{opacity:`${1 - buttonOpacity}`}}></div>
-      <div className={`tab tab${tab[0]}`} id="tab0" >
-        <div className="tabTop tabTop0" onClick={() => turnTo(0)} style={{left: `${(buttonWidth -25) * 0 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[0]}</div>
-        {kids[0]}
-      </div>      
-      <div className={`tab tab${tab[1]}`} id="tab1" >
-        <div className="tabTop tabTop1" onClick={() => turnTo(1)} style={{left: `${(buttonWidth -25) * 1 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[1]}</div>
-        {kids[1]}
-      </div>      
-      <div className={`tab tab${tab[2]}`} id="tab2" >
-        <div className="tabTop tabTop2" onClick={() => turnTo(2)} style={{left: `${(buttonWidth -25) * 2 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[2]}</div>
-        {kids[2]}
-      </div>      
-      <div className={`tab tab${tab[3]}`} id="tab3" >
-        <div className="tabTop tabTop3" onClick={() => turnTo(3)} style={{left: `${(buttonWidth -25) * 3 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[3]}</div>
-        {kids[3]}
-      </div>      
+      <div className="tabHolder">
+        <div className={`tab tab${tab[0]}`} id="tab0" >
+          <div className="tabTop tabTop0" onClick={() => turnTo(0)} style={{left: `${(buttonWidth -25) * 0 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[0]}</div>
+          {kids[0]}
+        </div>      
+        <div className={`tab tab${tab[1]}`} id="tab1" >
+          <div className="tabTop tabTop1" onClick={() => turnTo(1)} style={{left: `${(buttonWidth -25) * 1 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[1]}</div>
+          {kids[1]}
+        </div>      
+        <div className={`tab tab${tab[2]}`} id="tab2" >
+          <div className="tabTop tabTop2" onClick={() => turnTo(2)} style={{left: `${(buttonWidth -25) * 2 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[2]}</div>
+          {kids[2]}
+        </div>      
+        <div className={`tab tab${tab[3]}`} id="tab3" >
+          <div className="tabTop tabTop3" onClick={() => turnTo(3)} style={{left: `${(buttonWidth -25) * 3 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[3]}</div>
+          {kids[3]}
+        </div>
+      </div>
     </div>
   );
 }

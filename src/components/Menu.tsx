@@ -117,13 +117,15 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
   // The buttons were originally "Hello, About, Projects, Contact", they're now "About, Projects, Animation, Contact"
   // Too many variables and css classes to rename for something that may change again in the future.
 
+  const mainMenuStyle:React.CSSProperties = {
+    top:`${menuTop}px`,
+    transform: `scale(${menuScale})`,
+    opacity: buttonOpacity < 1 ? 0 : 1, // a clean cut works better than a transition, but I'm still using this var for the tab transformation
+    pointerEvents: buttonOpacity < 1 ? "none" : "auto",
+    zIndex: contZ
+  }
   
-  return <div style={{ 
-      top:`${menuTop}px`,
-      transform: `scale(${menuScale})`,
-      opacity: `${buttonOpacity < 1 ? 0 : 1}`, // a clean cut works better than a transition, but I'm still using this var for the tab transformation
-      zIndex: `${contZ}`
-      }} id="menu">
+  return <div style={mainMenuStyle} id="menu">
         <div style={{display:'none'}}>If you're poking around here in the HTML you'll see the button names are wrong.  I changed them around and can't be assed changing all the variable names that control the positions.</div>
     <a href="#About" onClick={() => turnToCheat(0)} style={helloStyle} className="menuButton helloButton">
       <div style={front} className='menuButtonPanel'>About Me</div>
