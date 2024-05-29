@@ -1,5 +1,5 @@
 import { useScrollPosition } from "@n8tb1t/use-scroll-position"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import sunbeam from "../images/sunbeam.jpg"
 import penguin from "../images/penguin.jpg"
 import trees   from "../images/trees.jpg"

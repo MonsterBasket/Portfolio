@@ -1,29 +1,56 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react"
+import Text from "./AboutText"
+import "./CSS/about.css"
 
 function About(){
+  const [delay, setDelay] = useState<number>(0)
+  const lastRender = useRef<number>(0)
+  const sway = useRef<number>(0.5);
+  const lastmousePos = useRef<number>(0);
+  const mousePos = useRef<number>(0);
 
+  useEffect(() => {
+    requestAnimationFrame((now) => animate(now))
+  }, [])
+  useEffect(() => {
+    window.addEventListener('mousemove', mouseCoords);
+    return () => {
+      window.removeEventListener('mousemove', mouseCoords);
+    };
+  }, []);
+
+  function mouseCoords(e:MouseEvent){
+    mousePos.current = e.clientX
+  }
+
+  function animate(now:number){
+    now *= 0.01;
+    const deltaTime = now - lastRender.current;
+    lastRender.current = now;
+    if (deltaTime) { //skips evaluations if no time has passed since last call (which strangely does happen)
+      let speed = (mousePos.current - lastmousePos.current) / deltaTime / 450
+      if (speed != 0) {
+        sway.current -= speed;
+        if (sway.current < -0.99) sway.current = -0.99
+        if (sway.current > 1) sway.current = 1
+      }
+      else sway.current *= 0.98
+      sway.current = sway.current / 2
+      setDelay(sway.current - 0.5)
+      lastmousePos.current = mousePos.current;
+    }
+    setTimeout(() => requestAnimationFrame((now) => animate(now)), 100)
+  }
+
+  const treeStyle:React.CSSProperties = {
+    animationDelay: delay+"s",
+    right: sway.current
+  }
+  
   return <section id="About">
-    <article>
-      <h3>Outdated filler text</h3>
-      <p>
-        Please note that this folio site is a work in progress, the site itself is my folio, as well as a handful of projects in the Projects section.
-        <br/><br/>
-        That includes the below.  I'll rewrite this soon, but this is what I was thinking a year ago:
-        <br/><br/>
-        Over a decade ago I finished a degree in 3D animation. I learnt two very important things during my course:
-        <br/><br/>
-        1: I LOVE the technical side of animation, and<br/>
-        2: Animation is not for me.
-        <br/><br/>
-        I'm an extremely technically minded person, and can never have enough problems to solve. While I definitely have a creative side, I discovered that I don't have that artistic PASSION that's required in such a competitive industry, not like I do for coding, scripting and automation.
-        <br/><br/>
-        I've played around with code my whole life, and even made my own Google Maps API integrated webtools to make my job easier in my last three roles. But it wasn't until my last position was made redundant that I went "hang on, this pay-out will keep me afloat for a little while, maybe I *don't* have to just jump into the next available position".
-        <br/><br/>
-        So I did some serious research and introspection. I even took two or three personality tests! I'm still not entirely sure I believe in them entirely, but they all gave me the same answers, and those answers felt like quite an accurate representation of how my mind works. One of the top suggested careers for people with my personality type was software engineer, so I looked into what a software engineer actually does, and I honestly felt like I didn't even have an option any more. I HAD to pursue this.
-        <br/><br/>
-        So I found a bootcamp that would help me solidify the skills I already had and add a few more to my repertoire, and jumped! Having now completed that course, I can confidently say that I'm ready for action!
-      </p>
-    </article>
+    <div className="tree" style={treeStyle}></div>
+    <h3>Outdated filler text</h3>
+    <Text />
   </section>
 }
 
