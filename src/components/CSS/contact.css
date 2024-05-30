@@ -1,4 +1,7 @@
 
+#Contact{
+  overflow: hidden;
+}
 .tree{
   position: absolute;
   --base: polygon(25% 100%, 27% 97%, 31% 94%, 43% 89%, 46% 86%, 47% 82%, 47% 66%, 47% 56%, 47% 47%, 47% 37%, 47% 24%, 46% 21%, 43% 20%, 40% 20%, 37% 22%, 35% 26%, 34% 34%, 33% 41%, 33% 47%, 33% 55%, 32% 61%, 31% 54%, 31% 47%, 31% 40%, 32% 32%, 33% 25%, 35% 21%, 39% 18%, 43% 18%, 40% 17%, 36% 17%, 32% 20%, 27% 28%, 26% 35%, 26% 40%, 25% 46%, 25% 53%, 25% 60%, 24% 66%, 23% 59%, 23% 52%, 23% 44%, 24% 38%, 25% 28%, 28% 23%, 31% 18%, 34% 16%, 38% 15%, 42% 15%, 37% 14%, 32% 14%, 27% 17%, 24% 20%, 21% 26%, 20% 33%, 19% 40%, 18% 47%, 18% 54%, 17% 60%, 16% 53%, 16% 45%, 17% 38%, 18% 31%, 19% 25%, 23% 18%, 27% 15%, 32% 12%, 38% 12%, 46% 14%, 49% 14%, 54% 12%, 60% 11%, 65% 11%, 70% 13%, 74% 17%, 77% 24%, 78% 32%, 78% 40%, 79% 49%, 79% 58%, 78% 66%, 77% 57%, 77% 48%, 76% 39%, 76% 33%, 75% 25%, 73% 20%, 69% 15%, 64% 13%, 56% 14%, 52% 16%, 58% 15%, 62% 16%, 65% 19%, 67% 24%, 68% 29%, 69% 34%, 69% 41%, 69% 53%, 68% 60%, 67% 52%, 67% 45%, 67% 37%, 67% 34%, 65% 25%, 64% 21%, 61% 18%, 57% 17%, 52% 18%, 56% 18%, 59% 20%, 61% 24%, 62% 30%, 62% 39%, 62% 48%, 61% 55%, 61% 61%, 60% 65%, 59% 61%, 59% 54%, 60% 47%, 60% 41%, 60% 35%, 60% 30%, 59% 26%, 58% 23%, 56% 21%, 53% 20%, 51% 21%, 50% 24%, 50% 35%, 50% 46%, 50% 56%, 50% 67%, 50% 82%, 51% 86%, 54% 89%, 63% 92%, 68% 95%, 71% 98%, 72% 100%);
@@ -12,8 +15,8 @@
   max-width: 80vw;
   max-height: 80vw;
   left: 10px;
-  bottom: 0;
-  background:red;
+  bottom: -20px;
+  background:rgb(98, 49, 34);
   clip-path: var(--base);
   animation-delay: -0.5s;
   animation: treeSway 1s linear;
@@ -25,4 +28,53 @@
   50% {clip-path: var(--base)}
   75% {clip-path: var(--right1)}
   100%{clip-path: var(--right2)}
+}
+.leafContainer, .leaf, .blossom{
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  background-size: 100% 100%;
+}
+.leafContainer{
+  animation: leafFall linear infinite;
+}
+.leaf, .blossom{
+  animation: linear infinite, alternate-reverse infinite;
+}
+.leaf{
+  background-image: url("../../images/cherryLeaf.png")
+}
+.blossom{
+  background-image: url("../../images/cherryBlossom.png")
+}
+@keyframes leafFall{ /* Applied to container */
+  0%   {top: -40px; }
+  100% {top: 101%; }
+}
+@keyframes leafSway1{ /* Applied to leaf */
+  0%, 100% {left: 0px; }
+  25%  {left: -20px;}
+  75% {left: 20px;}
+}
+@keyframes leafSway2{ /* Applied to leaf */
+  0%, 100% {left: 0px; }
+  35%  {left: -30px;}
+  85% {left: 20px;}
+}
+@keyframes leafSway3{ /* Applied to leaf */
+  0%, 100% {left: 0px; }
+  20%  {left: 20px;}
+  65% {left: 50px;}
+}
+@keyframes leafSpin1{
+  0% {transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);}
+  100% {transform: rotateX(720deg) rotateZ(360deg) rotateY(360deg);}
+}
+@keyframes leafSpin2{
+  0% {transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);}
+  100% {transform: rotateX(360deg) rotateZ(720deg) rotateY(360deg);}
+}
+@keyframes leafSpin3{
+  0% {transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);}
+  100% {transform: rotateX(360deg) rotateZ(360deg) rotateY(720deg);}
 }
