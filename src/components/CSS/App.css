@@ -143,6 +143,9 @@ article{
 #Contact, .tabTop3{
   background-color: #f5e1b9;
 }
+#Contact{
+  overflow: hidden;
+}
 /* Just note that the below button names have the above labels for the user */
 .helloButton .menuButtonPanel{
   background-color: #5f6f3a;
@@ -220,5 +223,5 @@ a{
 }
 @keyframes tabMorph{
   100%     { clip-path: polygon(0 100%, 6% 96%, 11% 83%, 12% 75%, 15% 21%, 17% 11%, 20% 3%, 25% 0, 75% 0, 80% 3%, 83% 11%, 85% 21%, 88% 75%, 89% 83%, 94% 96%, 100% 100%); }
-  0%   { clip-path: polygon(12% 84%, 12% 84%, 12% 83%, 12% 75%, 12% 21%, 12% 0%, 20% 0%, 25% 0, 75% 0, 80% 0%, 89% 0%, 89% 21%, 89% 75%, 89% 83%, 89% 84%, 89% 84%); }
+  0%   { clip-path: polygon(12% 83%, 12% 83%, 12% 83%, 12% 75%, 12% 21%, 12% 0%, 20% 0%, 25% 0, 75% 0, 80% 0%, 89% 0%, 89% 21%, 89% 75%, 89% 83%, 89% 83%, 89% 83%); }
 }

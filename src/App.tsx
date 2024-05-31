@@ -20,7 +20,7 @@ function App() {
       <Splash>
         <>
           <Hello />
-          <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About Me", "Projects", "Animation", "Contact"]}>
+          <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About", "Projects", "Work", "Contact"]}>
             <About />
             <Projects />
             <Animation />

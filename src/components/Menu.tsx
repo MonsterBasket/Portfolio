@@ -128,9 +128,9 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
   return <div style={mainMenuStyle} id="menu">
         <div style={{display:'none'}}>If you're poking around here in the HTML you'll see the button names are wrong.  I changed them around and can't be assed changing all the variable names that control the positions.</div>
     <a href="#About" onClick={() => turnToCheat(0)} style={helloStyle} className="menuButton helloButton">
-      <div style={front} className='menuButtonPanel'>About Me</div>
-      <div style={bottom} className='menuButtonPanel'>About Me</div>
-      <div style={back} className='menuButtonPanel'>About Me</div>
+      <div style={front} className='menuButtonPanel'>About</div>
+      <div style={bottom} className='menuButtonPanel'>About</div>
+      <div style={back} className='menuButtonPanel'>About</div>
     </a>
     <a href="#Projects" onClick={() => turnToCheat(1)} style={aboutStyle} className="menuButton aboutButton">
       <div style={front} className='menuButtonPanel'>Projects</div>
@@ -138,9 +138,9 @@ export default function Menu({buttonWidth, setButtonWidth, buttonOpacity, setBut
       <div style={back} className='menuButtonPanel'>Projects</div>
     </a>
     <a href="#Animation" onClick={() => turnToCheat(2)} style={projectsStyle} className="menuButton projectsButton">
-      <div style={front} className='menuButtonPanel'>Animation</div>
-      <div style={bottom} className='menuButtonPanel'>Animation</div>
-      <div style={back} className='menuButtonPanel'>Animation</div>
+      <div style={front} className='menuButtonPanel'>Work</div>
+      <div style={bottom} className='menuButtonPanel'>Work</div>
+      <div style={back} className='menuButtonPanel'>Work</div>
     </a>
     <a href="#Contact" onClick={() => turnToCheat(3)} style={contactStyle} className="menuButton contactButton">
       <div style={front} className='menuButtonPanel'>Contact</div>

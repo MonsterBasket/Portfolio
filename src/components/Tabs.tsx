@@ -10,8 +10,7 @@ type Props = {
 
 export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, children}: Props) {
 
-  buttonWidth += 35;
-  let tabOffset:number = 0;
+  buttonWidth *= 1.35;
   let tabMorph:number = -Math.min(Math.max(1.5 - buttonOpacity -1, 0), 1);
   const [tab, setTab] = useState<string[]>(["Front", "2", "1", "0"])
   const kids = React.Children.toArray(children);
@@ -59,19 +58,19 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
       <div className="tabTopBack" style={{opacity:`${1 - buttonOpacity}`}}></div>
       <div className="tabHolder">
         <div className={`tab tab${tab[0]}`} id="tab0" >
-          <div className="tabTop tabTop0" onClick={() => turnTo(0)} style={{left: `${(buttonWidth -25) * 0 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[0]}</div>
+          <div className="tabTop tabTop0" onClick={() => turnTo(0)} style={{left: `${15 - (buttonWidth * 0.12)}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[0]}</div>
           {kids[0]}
         </div>      
         <div className={`tab tab${tab[1]}`} id="tab1" >
-          <div className="tabTop tabTop1" onClick={() => turnTo(1)} style={{left: `${(buttonWidth -25) * 1 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[1]}</div>
+          <div className="tabTop tabTop1" onClick={() => turnTo(1)} style={{left: `${((buttonWidth / 1.35) + 24) - (buttonWidth * 0.12)}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[1]}</div>
           {kids[1]}
         </div>      
         <div className={`tab tab${tab[2]}`} id="tab2" >
-          <div className="tabTop tabTop2" onClick={() => turnTo(2)} style={{left: `${(buttonWidth -25) * 2 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[2]}</div>
+          <div className="tabTop tabTop2" onClick={() => turnTo(2)} style={{left: `${(buttonWidth / 1.35) * 2 + 32.5 - (buttonWidth * 0.12)}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[2]}</div>
           {kids[2]}
         </div>      
         <div className={`tab tab${tab[3]}`} id="tab3" >
-          <div className="tabTop tabTop3" onClick={() => turnTo(3)} style={{left: `${(buttonWidth -25) * 3 + tabOffset--}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[3]}</div>
+          <div className="tabTop tabTop3" onClick={() => turnTo(3)} style={{left: `${(buttonWidth / 1.35) * 3 + 40 - (buttonWidth * 0.12)}px`, width:`${buttonWidth}px`, opacity:`${buttonOpacity < 1 ? 1 : 0}`, animationDelay:`${tabMorph}s`}}>{names[3]}</div>
           {kids[3]}
         </div>
       </div>

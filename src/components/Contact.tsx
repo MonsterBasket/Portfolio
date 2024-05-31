@@ -34,15 +34,16 @@ export default function Contact(){
     console.log("hello leaves")
     for (let i = 0; i < 60; i++) {
       const depth = Math.random() + 0.5;
-      const fallSpeed = Math.random() * 5 + (window.innerHeight / 50) - 5 * (depth +1);
+      const wh = window.innerHeight / 100;
+      const fallSpeed = Math.random() * wh + wh - (wh / 2) * depth;
       const startTop = Math.random() * -fallSpeed;
-      const leftPos = Math.random() * window.innerWidth + 'px';
+      const leftPos = Math.random() * 100 + '%';
       const leafClass = leafClasses[Math.floor(Math.random() * 2)]
       const spin = leafSpins[Math.floor(Math.random() * 3)]
       const move = leafMoves[Math.floor(Math.random() * 3)]
       const spinSpeed = Math.random() * 3 + 4 + 's'
       const moveSpeed = Math.random() * 4 + 5 + 's'
-      leaves[i] = <div className="leafContainer" key={i} style={{animationDuration:fallSpeed+'s', animationDelay:startTop+'s', transform:`scale(${depth})`, zIndex:Math.floor((depth - 0.5) * 10), left:leftPos}}>
+      leaves[i] = <div className="leafContainer" id={`leaf${i}`} key={i} style={{animationDuration:fallSpeed+'s', animationDelay:startTop+'s', transform:`scale(${depth})`, zIndex:Math.floor((depth - 0.5) * 10), left:leftPos}}>
         <div className={leafClass} style={{animationName:`${spin}, ${move}`, animationDuration:`${spinSpeed}, ${moveSpeed}`, filter:`blur(${depth * 3 - 2}px)`}}></div>
       </div>
     }
@@ -75,17 +76,28 @@ export default function Contact(){
       sway.current = tempSway
       swayMod.current = tempSwayMod
       lastmousePos.current = mousePos.current;
+      for (let i = 0; i < leaves.length; i++) {
+        let myLeaf = document.getElementById(`leaf${i}`)
+        if (myLeaf) {
+          let left = parseFloat(myLeaf.style.left.substring(0, myLeaf.style.left.length - 1))
+          let leftMove = left - (tempSway * 2 * (parseFloat(myLeaf.style.zIndex + i / 10) / 50)) // i / 10 gives it a "random" multiplier for each leaf
+          if (leftMove > 100) leftMove -= 105
+          if (leftMove < -5) leftMove += 105
+          myLeaf.style.left = `${leftMove}%`
+        }
+      }
     }
     setTimeout(() => requestAnimationFrame((now) => animate(now)), 33)
   }
 
   
   return <section id="Contact">
-    <div className="tree" style={{animationDelay: delay+"s"}}></div>
-    {renderLeaves}
-    <h3>TESTING: {mousePos.current}</h3>
     <h2>Contact</h2>
     <a href="https://www.linkedin.com/in/james-blaskett/">LinkedIn</a><br/><br/>
     <a href="mailto:jmblasket@gmail.com" target="_blank">Email</a>
+    <div className="treeEffects">
+      <div className="tree" style={{animationDelay: delay+"s"}}></div>
+      {renderLeaves}
+    </div>
   </section>
 }
