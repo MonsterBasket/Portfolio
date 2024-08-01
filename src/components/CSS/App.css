@@ -143,7 +143,7 @@ article{
 #Contact, .tabTop3{
   background-color: #f5e1b9;
 }
-#Contact{
+#Contact, #About{
   overflow: hidden;
 }
 /* Just note that the below button names have the above labels for the user */

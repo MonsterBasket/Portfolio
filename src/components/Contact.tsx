@@ -31,7 +31,6 @@ export default function Contact(){
   }, []);
 
   function makeLeaves(){
-    console.log("hello leaves")
     for (let i = 0; i < 60; i++) {
       const depth = Math.random() + 0.5;
       const wh = window.innerHeight / 100;

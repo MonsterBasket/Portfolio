@@ -1,134 +1,224 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
 import Text from "./AboutText"
 
 export default function About(){
 
-window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
-window.addEventListener('pointerdown', handleMouseDown);
-window.addEventListener('pointerup', handleMouseUp);
-let squish:number = 1;
-let order:string[] = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
-let speed:number = 1;
-let mousePos:number = 0;
-let lastMousePos:number = 0;
-let clickedMousePos:number = 0;
-let clickTarget:number = 0;
-let hoverTarget:number = 0;
-let lastTime:number = 0;
-let checked:HTMLInputElement|null = null;
-let tempChecked:HTMLInputElement|null = null;
+  useEffect(() => {
+    window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
+    // window.addEventListener('pointerdown', handleMouseDown);
+    window.addEventListener('pointerup', handleMouseUp);
+    return () => {
+      window.removeEventListener('pointermove', mouseCoords); 
+      // window.removeEventListener('pointerdown', handleMouseDown);
+      window.removeEventListener('pointerup', handleMouseUp);
+    };
+  }, []);
 
-let contStyle = { gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` }
+  const active = useRef<boolean>(true)
+  const squish = useRef<number>(1)
+  const order = useRef<string[]>(["a1", "a2", "a3", "a4", "a5", "a6", "a7"])
+  const speed = useRef<number>(1)
+  const mousePos = useRef<number>(0)
+  const lastMousePos = useRef<number>(0)
+  const clickedMousePos = useRef<number>(0)
+  const clickTarget = useRef<string>("")
+  const hoverTarget = useRef<boolean>(false)
+  const checked = useRef<string>("")
 
+  const [contStyle, setContStyle] = useState({ gridTemplateAreas: "a1 a2 a3 a4 a5 a6 a7", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr 1fr" })
 
-function mouseDrag(e:any){
-  
-}
-function handleMouseDown(e:any){
-  if (e.target.previousElementSibling != checked) {
-    uncheck()
+  const radios = {
+    a1:useRef<HTMLInputElement | null>(null),
+    a2:useRef<HTMLInputElement | null>(null),
+    a3:useRef<HTMLInputElement | null>(null),
+    a4:useRef<HTMLInputElement | null>(null),
+    a5:useRef<HTMLInputElement | null>(null),
+    a6:useRef<HTMLInputElement | null>(null),
+    a7:useRef<HTMLInputElement | null>(null)
   }
-  clickTarget = getTarget(e)
-  if (clickTarget == 2) tempChecked = e.target
-  mousePos = e.clientX;
-  clickedMousePos = e.clientX;
-}
+  const keys = Object.keys(radios) as (keyof typeof radios)[];
 
-function handleMouseUp(e:any){
-  console.log(mousePos, clickedMousePos)
-  if (e.target == tempChecked && Math.abs(mousePos - clickedMousePos) < 15){
-    checked = e.target.previousElementSibling
-    if (checked) checked.checked = true
+  function handleMouseDown(e:any, ref:string){
+    e.preventDefault()
+    if (!ref && clickTarget.current) return // because this fires first from the card and then from the container
+    if (ref != checked.current) { 
+      uncheck()
+    }
+    clickTarget.current = ref;
+    mousePos.current = e.clientX
+    clickedMousePos.current = e.clientX
   }
-  if (Math.abs(mousePos - clickedMousePos) > 30) uncheck()
-  clickTarget = 0;
-  mousePos = e.clientX;
-}
 
-function mouseCoords(e:any){
-  hoverTarget = getTarget(e)
-  if(hoverTarget || clickTarget) mousePos = e.clientX;
-}
-function getTarget(e:any){
-  if (e.target.classList.contains("item")) return 1;
-  else if (e.target.classList.contains("c")) return 2;
-  else return 0;
-}
-function uncheck(){
-  let temp:HTMLInputElement|null = document.querySelector('input[name="cards"]:checked')
-  if (temp) temp.checked = false
-  checked = null
-}
+  function handleMouseUp(e:any){
+    e.preventDefault()
+    mousePos.current = e.clientX
+    let target:string = getTarget(e)
+    if (target == clickTarget.current && Math.abs(mousePos.current - clickedMousePos.current) < 15){
+      checked.current = target
+      if (target){
+        keys.forEach(key=> {
+          if (key == checked.current) radios[key].current!.checked = true;
+        })
+      }
+    }
+    else if (Math.abs(mousePos.current - clickedMousePos.current) > 30) uncheck()
+    else uncheck()
+    clickTarget.current = ""
+  }
 
-window.requestAnimationFrame(slide)
-function slide(timeStamp:number){
-  if(timeStamp - lastTime > 16) {
-    lastTime = timeStamp;
-    checked = document.querySelector('input[name="cards"]:checked')
-    if (checked){
-      let cc:string|undefined = checked?.parentElement?.parentElement?.classList[1];
-      if (order[0] == cc || order[1] == cc || order[2] == cc) speed = 5
-      else if (order[4] == cc || order[5] == cc || order[6] == cc) speed = -5
-      else if (Math.abs(speed) > 0.5) speed *= 0.8
+  function mouseCoords(e:any){
+    if(hoverTarget.current || clickTarget.current) mousePos.current = e.clientX
+  }
+  function getTarget(e:any){
+    if (e.target.classList.contains("item")) return e.target.classList[1]
+    else if (e.target.classList.contains("c")) return e.target.parentElement.parentElement.classList[1]
+    else return ""
+  }
+
+  function uncheck(){
+    keys.forEach(key => {
+        radios[key].current!.checked = false;
+    })
+    checked.current = ""
+  }
+
+  useEffect(() => {
+    if (active.current) requestAnimationFrame(slide)
+    return () => {active.current = false}
+  }, [active])
+  function slide(){
+    // let slideCards:HTMLInputElement | null = document.querySelector('input[name="cards"]:checked')
+    // if (slideCards) {
+    //   setChecked(slideCards as HTMLInputElement)
+    // }
+    if (checked.current){
+      // let cc:string|undefined = checked?.parentElement?.parentElement?.classList[1];
+      if (order.current[0] == checked.current || order.current[1] == checked.current || order.current[2] == checked.current) speed.current = 5
+      else if (order.current[4] == checked.current || order.current[5] == checked.current || order.current[6] == checked.current) speed.current = -5
+      else if (Math.abs(speed.current) > 0.5) speed.current *= 0.8
       else {
-        if (squish > 0.55) speed = -0.5
-        else if (squish < 0.45) speed = 0.5
-        else speed = 0;
+        if (squish.current > 0.55) speed.current = -0.5
+        else if (squish.current < 0.45) speed.current = 0.5
+        else speed.current = 0
       }
     }
-    else if (hoverTarget && Math.abs(speed) > 0.5) speed *= 0.95
-    else if (Math.abs(speed) > 1.1) speed *= 0.99
-    else if (Math.abs(speed) < 1) speed += speed < 0 ? -0.015 : 0.015;
-    if (clickTarget)
-    speed = (mousePos - lastMousePos) / 2
-    if (Math.abs(speed) > 0.05){
-      squish += (speed / 90);  // this is what ultimately controls the speed
-      if (squish < 0){
-        squish = 1;
-        order.push(order.shift() as string)
+    else if (hoverTarget.current && Math.abs(speed.current) > 0.5) speed.current *= 0.95 // reduces speed to 0.5 while hovering anywhere on container
+    else if (Math.abs(speed.current) > 1.01) speed.current *= 0.99 // slowly reduces speed to 1 when left alone (after dragging fast)
+    else if (Math.abs(speed.current) < 1) speed.current += speed.current < 0 ? -0.015 : 0.015 // increases speed to 1 if left alone
+    if (clickTarget.current)
+      speed.current = (mousePos.current - lastMousePos.current) / 2 // controls speed while holding down mouse
+    if (Math.abs(speed.current) > 0.05){
+      squish.current += (speed.current / 90)  // controls movement based on speed
+      if (squish.current < 0){
+        squish.current = 1
+        order.current.push(order.current.shift() as string) // loops right most image to left side
       }
-      if (squish > 1){
-        squish = 0
-        order.unshift(order.pop() as string)
+      if (squish.current > 1){
+        squish.current = 0
+        order.current.unshift(order.current.pop() as string) // opposite of above
       }
-      contStyle = { gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` }
+      setContStyle({gridTemplateAreas: `"${order.current[0]} ${order.current[1]} ${order.current[2]} ${order.current[3]} ${order.current[4]} ${order.current[5]} ${order.current[6]}"`, gridTemplateColumns: `${squish.current}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish.current}fr` })
     }
+    setTimeout(() => requestAnimationFrame(slide), 33)
+    lastMousePos.current = mousePos.current
   }
-  window.requestAnimationFrame(slide);
-  lastMousePos = mousePos;
-}
+
+  const header1:string = "Headline About Image"
+  const header2:string = "Longer Headline About Image for Two Lines"
+  const header3:string = "Different Headline"
+  const header4:string = "Is this even a headline?"
+  const header5:string = "What Is This Headline Anyway?"
+  const header6:string = "Need to Know More?"
+  const header7:string = "Are You Sure You Want to Click on This?"
+  const desc1:string = "What's Spanish for 'I know you speak English?' There's so many poorly chosen words in that sentence. But I bought a yearbook ad from you, doesn't that mean anything anymore?"
+  const desc2:string = "When I held that gun in my hand, I felt a surge of power… like God must feel when he's holding a gun. And now, in the spirit of the season: start shopping. And for every dollar of Krusty merchandise you buy, I will be nice to a sick kid. For legal purposes, sick kids may include hookers with a cold."
+  const desc3:string = "Aww, gee, you got me there, Rick. It's a figure of speech, Morty! They're bureaucrats! I don't respect them. Just keep shooting, Morty! You have no idea what prison is like here!"
+  const desc4:string = "I was part of something special. Eventually, you do plan to have dinosaurs on your dinosaur tour, right? Jaguar shark! So tell me - does it really exist?"
+  const desc5:string = "I'm sorry, guys. I never meant to hurt you. Just to destroy everything you ever believed in. Doomsday device? Ah, now the ball's in Farnsworth's court! Bender, quit destroying the universe! Goodbye, friends. I never thought I'd die like this. But I always really hoped."
+  const desc6:string = "As a scientist, I want to go to Mars and back to asteroids and the Moon because I'm a scientist. But I can tell you, I'm not so naive a scientist to think that the nation might not have geopolitical reasons for going into space."
+  const desc7:string = "Ni! Ni! Ni! Ni! Oh! Come and see the violence inherent in the system! Help, help, I'm being repressed! On second thoughts, let's not go there. It is a silly place. Bring her forward!"
+
 
   return <section id="About">
-    <div id="cont" onDragStart={e => e.preventDefault} onDrop={e => e.preventDefault} style={contStyle}>
-      <div className="item a1"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-        <div className="c cardImage"></div>
-        <div className="c cardDesc"><div className="c h3"><h3>Headline About Image</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-      <div className="item a2"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-        <div className="c cardImage"></div>
-        <div className="c cardDesc"><div className="c h3"><h3>Longer Headline About Image for Two Lines</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-        <div className="item a3"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
+    <div id="cont" onPointerDown={e => handleMouseDown(e, "")} onDragStart={e => e.preventDefault} onDragEnd={e => e.preventDefault} onMouseEnter={() => {hoverTarget.current = true}} onMouseLeave={() => {hoverTarget.current = false}} style={contStyle}>
+      <div className="item a1">
+        <label>
+          <input ref={radios.a1} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a1")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header1}</h3><p>{desc1}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a2">
+        <label>
+          <input ref={radios.a2} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a2")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header2}</h3><p>{desc2}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a3">
+        <label>
+          <input ref={radios.a3} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a3")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header3}</h3><p>{desc3}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a4">
+        <label>
+          <input ref={radios.a4} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a4")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header4}</h3><p>{desc4}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a5">
+        <label>
+          <input ref={radios.a5} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a5")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header5}</h3><p>{desc5}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a6">
+        <label>
+          <input ref={radios.a6} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a6")}>
           <div className="c cardImage"></div>
-          <div className="c cardDesc"><div className="c h3"><h3>Different Headline</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-        <div className="item a4"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-          <div className="c cardImage"></div>
-          <div className="c cardDesc"><div className="c h3"><h3>Is this even a headline?</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-        <div className="item a5"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-          <div className="c cardImage"></div>
-          <div className="c cardDesc"><div className="c h3"><h3>What Is This Headline Anyway?</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-          <div className="item a6"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-          <div className="c cardImage"></div>
-            <div className="c cardDesc"><div className="c h3"><h3>Need to Know More?</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
-          <div className="item a7"><label><input onClick={(e) => mouseDrag(e)} type="radio" name="cards" /><div className="c card">
-          <div className="c cardImage"></div>
-            <div className="c cardDesc"><div className="c h3"><h3>Are You Sure You Want to Click on This?</h3><p>Smaller, longer description about whatever is happening in this card.  Is this interesting to you?</p></div></div>
-      </div></label></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header6}</h3><p>{desc6}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div className="item a7">
+        <label>
+          <input ref={radios.a7} type="radio" name="cards" />
+          <div className="c card" onPointerDown={e => handleMouseDown(e, "a7")}>
+            <div className="c cardImage"></div>
+            <div className="c cardDesc">
+              <div className="c h3"><h3>{header7}</h3><p>{desc7}</p></div>
+            </div>
+          </div>
+        </label>
+      </div>
     </div>
     <div style={{height: '100%'}}>
       <Text />
