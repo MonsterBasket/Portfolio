@@ -16,18 +16,23 @@ function Animation(){
     setPagePos([pagePos[num(0)], pagePos[num(1)], pagePos[num(2)], pagePos[num(3)], pagePos[num(4)], pagePos[num(5)]])
     setDescPos([descPos[num(0)], descPos[num(1)], descPos[num(2)], descPos[num(3)], descPos[num(4)], descPos[num(5)]])
   }
-
-  const alley:ReactElement = <iframe src="https://player.vimeo.com/video/5008288?h=22815a5165" width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture" />
+  const alleyUrl:string = "" // "https://player.vimeo.com/video/5008288?h=22815a5165"
+  const cookiesUrl:string = "" // "https://www.youtube.com/embed/XRhsOcLPqiQ?si=wbU0P8G8_0sTDUb6"  
+  const matteUrl:string = "" // "https://youtube.com/embed/6Q-97PUTFZo?si=V3gneftIKLd2Nfk0"
+  const showreelUrl:string = "" // "https://player.vimeo.com/video/35045360?h=02bc212f2a"
+  const gearsUrl:string = "" // "https://www.youtube.com/embed/T0VNYxlmUbQ?si=jcFYfyD0epqUukZX"
+  const hairUrl:string = "" // "https://www.youtube.com/embed/D81XrEyneAA?si=jFrUNLEuW4z46LJd"
+  const alley:ReactElement = <iframe src={alleyUrl} width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture" />
   const alleyDesc:string = `Brief: A 6 second abstract video synced to a music clip promoting a school event "Kick the Vendor".  I modelled the alleyway to match the photo and used (too many?) dynamic particles with physics.`
-  const cookies:ReactElement = <iframe width="100%" height="100%" src="https://www.youtube.com/embed/XRhsOcLPqiQ?si=wbU0P8G8_0sTDUb6" title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+  const cookies:ReactElement = <iframe width="100%" height="100%" src={cookiesUrl} title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const cookiesDesc:ReactElement = <span><h3>Cookies</h3>Flash animation that I had a lot of fun with. I lost the original render and the blurred animations (smoke, bird, trees) rendered as static in this one.</span>
-  const mattePainting:ReactElement = <iframe width="100%" height="100%" src="https://youtube.com/embed/6Q-97PUTFZo?si=V3gneftIKLd2Nfk0" title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+  const mattePainting:ReactElement = <iframe width="100%" height="100%" src={matteUrl} title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const mattePaintingDesc:string = "A matte painting, cutting out trees is hard!"
-  const showreel:ReactElement = <iframe title="Showreel - James Blaskett 2011" src="https://player.vimeo.com/video/35045360?h=02bc212f2a" width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+  const showreel:ReactElement = <iframe title="Showreel - James Blaskett 2011" src={showreelUrl} width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture"></iframe>
   const showreelDesc:string = "A compilation showing many of my works from uni after I graduated in 2011"
-  const gears:ReactElement = <iframe width="100%" height="100%" src="https://www.youtube.com/embed/T0VNYxlmUbQ?si=jcFYfyD0epqUukZX" title="Dynamic Gears" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+  const gears:ReactElement = <iframe width="100%" height="100%" src={gearsUrl} title="Dynamic Gears" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const gearsDesc:string = "All the animation here is dynamic, the tall gear shown first is animated to spin, then everything else (including the swinging lights) is dynamic."
-  const hair:ReactElement = <iframe width="100%" height="100%" src="https://www.youtube.com/embed/D81XrEyneAA?si=jFrUNLEuW4z46LJd" title="MoCap Hair" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+  const hair:ReactElement = <iframe width="100%" height="100%" src={hairUrl} title="MoCap Hair" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const hairDesc:string = "This was a group project that was supposed to be MoCap but ended up being mostly rotoscope.  The 3D modelling was done by the other members, the mocap/roto was me, not sure if that's a self compliment or insult though..."
   const disclaimer:ReactElement = <img src={disclaimerImg} style={{width:"100%"}}></img>
   const disclaimerDesc:ReactElement = <span>Please note, all the work in this section is close to 15 years old.  This website itself is my portfolio, this is just filler content from a previous life.<br/><br/>I originally made this carousel for the menu in my game Monster Basket which you can see on my projects page.</span>
