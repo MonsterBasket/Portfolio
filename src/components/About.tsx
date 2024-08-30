@@ -11,7 +11,8 @@ export default function About(){
   let squish:number = 1;
   let order:string[] = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
   let speed:number = 1;
-  let mousePos:number = 0;
+  let mousePosX = useRef<number>(0);
+  let mousePosY = useRef<number>(0);
   let lastMousePos:number = 0;
   let clickedMousePos:number = 0;
   let clickTarget:number = 0;
@@ -19,7 +20,17 @@ export default function About(){
   let lastTime:number = 0;
   let checked:HTMLInputElement|null = null;
   let tempChecked:HTMLInputElement|null = null;
-  const seventh = 100 / 7
+  let reset:ReturnType<typeof requestAnimationFrame>;
+  let posXAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  let posYAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  const angleTarget = useRef<number>(0);
+  const trans = useRef<number>(1);
+  const seventh:number = 100 / 7;
+  let squeventh:number = seventh;
+  let lerpIn:number = 0;
+  let lerpOut:number = 0;
+
+
 
   const [contStyle, setContStyle] = useState<object>({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
   const [a1Pos, setA1Pos] = useState<object>({backgroundPosition: "50% 50%"})
@@ -29,6 +40,14 @@ export default function About(){
   const [a5Pos, setA5Pos] = useState<object>({backgroundPosition: "50% 50%"})
   const [a6Pos, setA6Pos] = useState<object>({backgroundPosition: "50% 50%"})
   const [a7Pos, setA7Pos] = useState<object>({backgroundPosition: "50% 50%"})
+  const [a1Angle, setA1Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a2Angle, setA2Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a3Angle, setA3Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a4Angle, setA4Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a5Angle, setA5Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a6Angle, setA6Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  const [a7Angle, setA7Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+
 
   useEffect(() => {
     window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
@@ -47,25 +66,64 @@ export default function About(){
     }
     clickTarget = getTarget(e)
     if (clickTarget == 2) tempChecked = e.target
-    mousePos = e.clientX;
+    mousePosX.current = e.clientX;
     clickedMousePos = e.clientX;
   }
-
   function handleMouseUp(e:any){
-    if (e.target == tempChecked && Math.abs(mousePos - clickedMousePos) < 15){
+    if (e.target == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
       checked = e.target.previousElementSibling
       if (checked) checked.checked = true
     }
-    if (Math.abs(mousePos - clickedMousePos) > 30) uncheck()
+    if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
     clickTarget = 0;
-    mousePos = e.clientX;
+    mousePosX.current = e.clientX;
   }
 
   function mouseCoords(e:any){
-    requestAnimationFrame(t => mousePos = e.clientX)
-    hoverTarget = getTarget(e)
-    // if(hoverTarget || clickTarget) mousePos = e.clientX;
+    requestAnimationFrame(t => {mousePosX.current = e.clientX; mousePosY.current = e.clientY})
+    if (e.target.classList.contains("c")) hoverTarget = parseInt(e.target.parentElement.className.substring(6))
+    else if (e.target.classList.contains("item")) hoverTarget = 8
+    else hoverTarget = 0
   }
+
+  function startAngle(e:any, card:number){
+    angleTarget.current = card;
+    window.requestAnimationFrame(t => changeAngle(e, card));
+  }
+  function changeAngle(e:any, card:number){
+    if (card == angleTarget.current){
+      const rect = e.target.getBoundingClientRect();
+      const w = rect.width / 2
+      const h = rect.height / 2
+      if (trans.current > 0) trans.current *= 0.95
+      const angle = {transform: `rotateX(${(mousePosY.current - rect.y - h) / h * -10}deg) rotateY(${(mousePosX.current - rect.x - w) / w * 10}deg)`, transition: `all 1s, transform ${trans.current}s`}
+      posXAdj.current[card - 1] = (mousePosX.current - rect.x - w) / w * 2.5
+      posYAdj.current[card - 1] = (mousePosY.current - rect.y - h) / h * 2.5
+      if (card == 1) setA1Angle(angle)
+      if (card == 2) setA2Angle(angle)
+      if (card == 3) setA3Angle(angle)
+      if (card == 4) setA4Angle(angle)
+      if (card == 5) setA5Angle(angle)
+      if (card == 6) setA6Angle(angle)
+      if (card == 7) setA7Angle(angle)
+      reset = window.requestAnimationFrame(t => changeAngle(e, card))
+    }
+  }
+  function resetAngle(card:number){
+    angleTarget.current = 0;
+    trans.current = 1;
+    posXAdj.current[card - 1] = 0
+    posYAdj.current[card - 1] = 0
+    cancelAnimationFrame(reset);
+    if (card == 1) setA1Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 2) setA2Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 3) setA3Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 4) setA4Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 5) setA5Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 6) setA6Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+    if (card == 7) setA7Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
+  }
+
   function getTarget(e:any){
     if (e.target.classList.contains("item")) return 1;
     else if (e.target.classList.contains("c")) return 2;
@@ -85,9 +143,9 @@ export default function About(){
     if(timeStamp - lastTime > 16) {
       lastTime = timeStamp;
       checked = document.querySelector('input[name="cards"]:checked')
-      if (clickTarget) speed = (mousePos - lastMousePos) / 2
+      const cc:string|undefined = checked?.parentElement?.classList[1]
+      if (clickTarget) speed = (mousePosX.current - lastMousePos) / 2
       else if (checked){
-        let cc:string|undefined = checked?.parentElement?.classList[1];
         if (order[0] == cc || order[1] == cc || order[2] == cc) speed = 5
         else if (order[4] == cc || order[5] == cc || order[6] == cc) speed = -5
         else if (Math.abs(speed) > 2) speed *= 0.8
@@ -101,35 +159,31 @@ export default function About(){
       else if (Math.abs(speed) > 1.1) speed *= 0.99
       else if (Math.abs(speed) < 1) speed += speed < 0 ? -0.015 : 0.015;
       if (Math.abs(speed) > 0.05){
-        // const tempSquish = squish + (speed / 90);  // this is what ultimately controls the speed
-        squish += (speed / 150)
+        squish += (speed / 120) // this is what ultimately controls the speed
         if (squish < 0){
-          // setSquish(1);
           squish = 1;
-          // setOrder([order[1], order[2], order[3], order[4], order[5], order[6], order[0]])
           order.push(order.shift() as string)
         }
         if (squish > 1){
-          // setSquish(0)
-          squish = 0;
-          // setOrder([order[6], order[0], order[1], order[2], order[3], order[4], order[5]])
+          squish = 0; 
           order.unshift(order.pop() as string)
         }
-        // else setSquish(tempSquish)
-        // else squish = tempSquish;
         setContStyle({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
-        let squeventh = seventh * squish
-        setA1Pos({backgroundPosition: `${seventh * (7 - parseInt(order[6].substring(1))) + squeventh}% 50%`})
-        setA2Pos({backgroundPosition: `${seventh * (7 - parseInt(order[5].substring(1))) + squeventh}% 50%`})
-        setA3Pos({backgroundPosition: `${seventh * (7 - parseInt(order[4].substring(1))) + squeventh}% 50%`})
-        setA4Pos({backgroundPosition: `${seventh * (7 - parseInt(order[3].substring(1))) + squeventh}% 50%`})
-        setA5Pos({backgroundPosition: `${seventh * (7 - parseInt(order[2].substring(1))) + squeventh}% 50%`})
-        setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh}% 50%`})
-        setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh}% 50%`})
+        squeventh = seventh * squish
       }
+      // lerpIn = Date.now()
+      // lerpOut
+      // maybe a clickLerp and hoverLerp, maybe one of each for all 7 images?
+      setA1Pos({backgroundPosition: `${seventh * (7 - parseInt(order[6].substring(1))) + squeventh + (posXAdj.current[0] * (cc == "a1" ? 20 : 1))}% ${50 + (posYAdj.current[0] * (cc == "a1" ? 20 : 1))}%`})
+      setA2Pos({backgroundPosition: `${seventh * (7 - parseInt(order[5].substring(1))) + squeventh + (posXAdj.current[1] * (cc == "a2" ? 20 : 1))}% ${50 + (posYAdj.current[1] * (cc == "a2" ? 20 : 1))}%`})
+      setA3Pos({backgroundPosition: `${seventh * (7 - parseInt(order[4].substring(1))) + squeventh + (posXAdj.current[2] * (cc == "a3" ? 20 : 1))}% ${50 + (posYAdj.current[2] * (cc == "a3" ? 20 : 1))}%`})
+      setA4Pos({backgroundPosition: `${seventh * (7 - parseInt(order[3].substring(1))) + squeventh + (posXAdj.current[3] * (cc == "a4" ? 20 : 1))}% ${50 + (posYAdj.current[3] * (cc == "a4" ? 20 : 1))}%`})
+      setA5Pos({backgroundPosition: `${seventh * (7 - parseInt(order[2].substring(1))) + squeventh + (posXAdj.current[4] * (cc == "a5" ? 20 : 1))}% ${50 + (posYAdj.current[4] * (cc == "a5" ? 20 : 1))}%`})
+      setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * (cc == "a6" ? 20 : 1))}% ${50 + (posYAdj.current[5] * (cc == "a6" ? 20 : 1))}%`})
+      setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * (cc == "a7" ? 20 : 1))}% ${50 + (posYAdj.current[6] * (cc == "a7" ? 20 : 1))}%`})
     }
     window.requestAnimationFrame(slide);
-    lastMousePos = mousePos;
+    lastMousePos = mousePosX.current;
   }
 
 
@@ -153,7 +207,7 @@ export default function About(){
     <div id="cont" onDragStart={e => e.preventDefault} onDrop={e => e.preventDefault} style={contStyle}>
       <div className="item a1">
         <input id="a1" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 1)} onMouseLeave={e => resetAngle(1)} style={a1Angle}>
           <div className="c cardImage" style={a1Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header1}</h3><p>{desc1}</p></div>
@@ -162,7 +216,7 @@ export default function About(){
       </div>
       <div className="item a2">
         <input id="a2" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 2)} onMouseLeave={e => resetAngle(2)} style={a2Angle}>
           <div className="c cardImage" style={a2Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header2}</h3><p>{desc2}</p></div>
@@ -171,7 +225,7 @@ export default function About(){
       </div>
       <div className="item a3">
         <input id="a3" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 3)} onMouseLeave={e => resetAngle(3)} style={a3Angle}>
           <div className="c cardImage" style={a3Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header3}</h3><p>{desc3}</p></div>
@@ -180,7 +234,7 @@ export default function About(){
       </div>
       <div className="item a4">
         <input id="a4" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 4)} onMouseLeave={e => resetAngle(4)} style={a4Angle}>
           <div className="c cardImage" style={a4Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header4}</h3><p>{desc4}</p></div>
@@ -189,7 +243,7 @@ export default function About(){
       </div>
       <div className="item a5">
         <input id="a5" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 5)} onMouseLeave={e => resetAngle(5)} style={a5Angle}>
           <div className="c cardImage" style={a5Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header5}</h3><p>{desc5}</p></div>
@@ -198,7 +252,7 @@ export default function About(){
       </div>
       <div className="item a6">
         <input id="a6" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 6)} onMouseLeave={e => resetAngle(6)} style={a6Angle}>
           <div className="c cardImage" style={a6Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header6}</h3><p>{desc6}</p></div>
@@ -207,7 +261,7 @@ export default function About(){
       </div>
       <div className="item a7">
         <input id="a7" onClick={handleMouseDown} type="radio" name="cards" />
-        <div className="c card">
+        <div className="c card" onMouseEnter={e => startAngle(e, 7)} onMouseLeave={e => resetAngle(7)} style={a7Angle}>
           <div className="c cardImage" style={a7Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header7}</h3><p>{desc7}</p></div>

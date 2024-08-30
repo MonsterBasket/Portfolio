@@ -1,4 +1,3 @@
-body{ overflow:hidden;}
 #cont{
   display: grid;
   position: absolute;
@@ -32,6 +31,8 @@ body{ overflow:hidden;}
   display: flex;
   justify-content: center;
   align-items: center;
+  perspective: 400px;
+  z-index: 1;
 }
 [type=radio]{
   position: absolute;
@@ -41,14 +42,13 @@ body{ overflow:hidden;}
 }
 .card{
   position: absolute;
-  background: white;
   border-radius: 5px;
   box-shadow: 10px 15px 15px 0 rgb(0,0,0,0.5);
   left: 5%;
   top: 10%;
   width: 90%;
   height: 80%;
-  transition: 1s;
+  transition: all 1s, transform 1s;
   cursor: pointer;
   box-sizing: border-box;
   z-index: 1;
@@ -60,7 +60,11 @@ body{ overflow:hidden;}
   width: 100%;
   height: 90%;
   z-index: 2;
+  transition: all 1s, transform 0s;
   box-shadow: 15px 20px 20px 0 rgb(0,0,0,0.5);
+}
+.item:has(.card:hover){
+  z-index: 2;
 }
 .card:active{
   cursor:grabbing;
@@ -74,6 +78,10 @@ body{ overflow:hidden;}
   border-radius: 20px;
   z-index: 3;
   box-shadow: 15px 20px 20px 0 rgb(0,0,0,0.5);
+}
+.item:has([type=radio]:checked + .card){
+  z-index: 3;
+  perspective: 800px;
 }
 .cardDesc{
   position: absolute;
@@ -161,10 +169,10 @@ body{ overflow:hidden;}
   background-repeat: no-repeat;
   background-position: 50% 50%;
   pointer-events: none;
-  transition: background-size 1s;
+  transition: background-size 1s, background-position 0s;
 }
 [type=radio]:checked + .card .cardImage{
-  background-size: 120% 100%;
+  background-size: 130% 110%;
 }
 /* .a1 .cardImage{background-image: url("https://picsum.photos/id/15/500");}
 .a2 .cardImage{background-image: url("https://picsum.photos/id/18/500")}
