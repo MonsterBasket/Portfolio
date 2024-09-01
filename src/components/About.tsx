@@ -18,19 +18,19 @@ export default function About(){
   let clickTarget:number = 0;
   let hoverTarget:number = 0;
   let lastTime:number = 0;
-  let checked:HTMLInputElement|null = null;
-  let tempChecked:HTMLInputElement|null = null;
+  const checked = useRef<number>(0);
+  let tempChecked:number = 0;
+  let toCheck:HTMLInputElement|null = null;
   let reset:ReturnType<typeof requestAnimationFrame>;
-  let posXAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
-  let posYAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  const posXAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  const posYAdj = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  const posLerp = useRef<number[]>([0, 0, 0, 0, 0, 0, 0])
+  const magLerp = useRef<number[]>([1, 1, 1, 1, 1, 1, 1])
+  const lerpReset = useRef<ReturnType<typeof requestAnimationFrame>[]>([0,0,0,0,0,0,0])
   const angleTarget = useRef<number>(0);
   const trans = useRef<number>(1);
   const seventh:number = 100 / 7;
   let squeventh:number = seventh;
-  let lerpIn:number = 0;
-  let lerpOut:number = 0;
-
-
 
   const [contStyle, setContStyle] = useState<object>({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
   const [a1Pos, setA1Pos] = useState<object>({backgroundPosition: "50% 50%"})
@@ -61,18 +61,24 @@ export default function About(){
   }, [])
 
   function handleMouseDown(e:any){
-    if (e.target.previousElementSibling != checked) {
+    clickTarget = getTarget(e)
+    if (clickTarget != checked.current) {
       uncheck()
     }
-    clickTarget = getTarget(e)
-    if (clickTarget == 2) tempChecked = e.target
+    if (clickTarget > 0 && clickTarget < 8) tempChecked = clickTarget
     mousePosX.current = e.clientX;
     clickedMousePos = e.clientX;
   }
   function handleMouseUp(e:any){
-    if (e.target == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
-      checked = e.target.previousElementSibling
-      if (checked) checked.checked = true
+    const thisCheck:number = getTarget(e)
+    if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
+      toCheck = e.target.previousElementSibling
+      if (toCheck) {
+        toCheck.checked = true
+        checked.current = thisCheck;
+        cancelAnimationFrame(lerpReset.current[thisCheck - 1])
+        window.requestAnimationFrame(t => lerpUp(t, t, thisCheck, thisCheck))
+      }
     }
     if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
     clickTarget = 0;
@@ -80,15 +86,18 @@ export default function About(){
   }
 
   function mouseCoords(e:any){
-    requestAnimationFrame(t => {mousePosX.current = e.clientX; mousePosY.current = e.clientY})
-    if (e.target.classList.contains("c")) hoverTarget = parseInt(e.target.parentElement.className.substring(6))
-    else if (e.target.classList.contains("item")) hoverTarget = 8
-    else hoverTarget = 0
+    mousePosX.current = e.clientX;
+    mousePosY.current = e.clientY;
+    hoverTarget = getTarget(e);
   }
 
   function startAngle(e:any, card:number){
     angleTarget.current = card;
-    window.requestAnimationFrame(t => changeAngle(e, card));
+    cancelAnimationFrame(lerpReset.current[card - 1])
+    window.requestAnimationFrame(t => {
+      changeAngle(e, card);
+      lerpUp(t, t, card, checked.current)
+    });
   }
   function changeAngle(e:any, card:number){
     if (card == angleTarget.current){
@@ -97,23 +106,23 @@ export default function About(){
       const h = rect.height / 2
       if (trans.current > 0) trans.current *= 0.95
       const angle = {transform: `rotateX(${(mousePosY.current - rect.y - h) / h * -10}deg) rotateY(${(mousePosX.current - rect.x - w) / w * 10}deg)`, transition: `all 1s, transform ${trans.current}s`}
-      posXAdj.current[card - 1] = (mousePosX.current - rect.x - w) / w * 2.5
-      posYAdj.current[card - 1] = (mousePosY.current - rect.y - h) / h * 2.5
+      posXAdj.current[card - 1] = (mousePosX.current - rect.x - w) / w * 5
+      posYAdj.current[card - 1] = (mousePosY.current - rect.y - h) / h * 5
       if (card == 1) setA1Angle(angle)
-      if (card == 2) setA2Angle(angle)
-      if (card == 3) setA3Angle(angle)
-      if (card == 4) setA4Angle(angle)
-      if (card == 5) setA5Angle(angle)
-      if (card == 6) setA6Angle(angle)
-      if (card == 7) setA7Angle(angle)
+      else if (card == 2) setA2Angle(angle)
+      else if (card == 3) setA3Angle(angle)
+      else if (card == 4) setA4Angle(angle)
+      else if (card == 5) setA5Angle(angle)
+      else if (card == 6) setA6Angle(angle)
+      else if (card == 7) setA7Angle(angle)
       reset = window.requestAnimationFrame(t => changeAngle(e, card))
     }
   }
   function resetAngle(card:number){
     angleTarget.current = 0;
     trans.current = 1;
-    posXAdj.current[card - 1] = 0
-    posYAdj.current[card - 1] = 0
+    cancelAnimationFrame(lerpReset.current[card - 1]);
+    window.requestAnimationFrame(t => lerpDown(t, t, card, posXAdj.current[card - 1], posYAdj.current[card - 1], checked.current == card ? 1 : 0))
     cancelAnimationFrame(reset);
     if (card == 1) setA1Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
     if (card == 2) setA2Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
@@ -124,15 +133,61 @@ export default function About(){
     if (card == 7) setA7Angle({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
   }
 
+  function lerpUp(ts:number, lt:number, card:number, checked:number){
+    if (posLerp.current[card - 1] < 1 || checked == card && (posLerp.current[card - 1] < 1 || magLerp.current[card - 1] < 10)){
+      if (posLerp.current[card - 1] < 1)
+        posLerp.current[card - 1] += ((ts - lt) / 1000)
+      else if (posLerp.current[card - 1] != 1)
+        posLerp.current[card - 1] = 1
+      if (checked == card) {
+        if (magLerp.current[card - 1] < 10)
+          magLerp.current[card - 1] += ((ts - lt) / 500) * 10
+        else if (magLerp.current[card - 1] != 10)
+          magLerp.current[card - 1] = 10
+      }
+      lerpReset.current[card - 1] = window.requestAnimationFrame(t => lerpUp(t, ts, card, checked))
+    }
+    else {
+      posLerp.current[card - 1] = 1
+      if (checked == card) magLerp.current[card - 1] = 10
+    }
+  }
+  function lerpDown(ts:number, lt:number, card:number, x:number, y:number, checked:number){
+    if (posLerp.current[card - 1] > 0 || checked > 0 && (posLerp.current[card - 1] > 0 || magLerp.current[card - 1] > 1)){
+      if (posLerp.current[card - 1] > 0 && checked < 2)
+        posLerp.current[card - 1] -= (ts - lt) / 500
+      else if (posLerp.current[card - 1] != 0 && checked < 2)
+        posLerp.current[card - 1] = 0
+      if (checked > 0 && magLerp.current[card - 1] > 1)
+        magLerp.current[card - 1] -= (ts - lt) / 1000 * 10
+      else if (magLerp.current[card - 1] != 1)
+        magLerp.current[card - 1] = 1
+      lerpReset.current[card - 1] = window.requestAnimationFrame(t => lerpDown(t, ts, card, x, y, checked))
+    }
+    else {
+      if (checked < 2){
+        posLerp.current[card - 1] = 0
+        posXAdj.current[card - 1] = 0
+        posYAdj.current[card - 1] = 0
+      }
+      magLerp.current[card - 1] = 1
+    } 
+  }
+
   function getTarget(e:any){
-    if (e.target.classList.contains("item")) return 1;
-    else if (e.target.classList.contains("c")) return 2;
+    if (e.target.classList.contains("item")) return 8;
+    else if (e.target.classList.contains("c")) return parseInt(e.target.parentElement.className.substring(6));
     else return 0;
   }
   function uncheck(){
-    let temp:HTMLInputElement|null = document.querySelector('input[name="cards"]:checked')
-    if (temp) temp.checked = false
-    checked = null
+    // let temp:HTMLInputElement|null = document.querySelector('input[name="cards"]:checked')
+    if (toCheck) {
+      toCheck.checked = false
+      toCheck = null
+    }
+    const temp = checked.current
+    window.requestAnimationFrame(t => lerpDown(t, t, temp, posXAdj.current[checked.current - 1], posYAdj.current[checked.current - 1], 2))
+    checked.current = 0
   }
 
   useEffect(() => {
@@ -142,10 +197,9 @@ export default function About(){
   function slide(timeStamp:number){
     if(timeStamp - lastTime > 16) {
       lastTime = timeStamp;
-      checked = document.querySelector('input[name="cards"]:checked')
-      const cc:string|undefined = checked?.parentElement?.classList[1]
+      const cc:string = "a" + checked.current
       if (clickTarget) speed = (mousePosX.current - lastMousePos) / 2
-      else if (checked){
+      else if (checked.current){
         if (order[0] == cc || order[1] == cc || order[2] == cc) speed = 5
         else if (order[4] == cc || order[5] == cc || order[6] == cc) speed = -5
         else if (Math.abs(speed) > 2) speed *= 0.8
@@ -171,16 +225,13 @@ export default function About(){
         setContStyle({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
         squeventh = seventh * squish
       }
-      // lerpIn = Date.now()
-      // lerpOut
-      // maybe a clickLerp and hoverLerp, maybe one of each for all 7 images?
-      setA1Pos({backgroundPosition: `${seventh * (7 - parseInt(order[6].substring(1))) + squeventh + (posXAdj.current[0] * (cc == "a1" ? 20 : 1))}% ${50 + (posYAdj.current[0] * (cc == "a1" ? 20 : 1))}%`})
-      setA2Pos({backgroundPosition: `${seventh * (7 - parseInt(order[5].substring(1))) + squeventh + (posXAdj.current[1] * (cc == "a2" ? 20 : 1))}% ${50 + (posYAdj.current[1] * (cc == "a2" ? 20 : 1))}%`})
-      setA3Pos({backgroundPosition: `${seventh * (7 - parseInt(order[4].substring(1))) + squeventh + (posXAdj.current[2] * (cc == "a3" ? 20 : 1))}% ${50 + (posYAdj.current[2] * (cc == "a3" ? 20 : 1))}%`})
-      setA4Pos({backgroundPosition: `${seventh * (7 - parseInt(order[3].substring(1))) + squeventh + (posXAdj.current[3] * (cc == "a4" ? 20 : 1))}% ${50 + (posYAdj.current[3] * (cc == "a4" ? 20 : 1))}%`})
-      setA5Pos({backgroundPosition: `${seventh * (7 - parseInt(order[2].substring(1))) + squeventh + (posXAdj.current[4] * (cc == "a5" ? 20 : 1))}% ${50 + (posYAdj.current[4] * (cc == "a5" ? 20 : 1))}%`})
-      setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * (cc == "a6" ? 20 : 1))}% ${50 + (posYAdj.current[5] * (cc == "a6" ? 20 : 1))}%`})
-      setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * (cc == "a7" ? 20 : 1))}% ${50 + (posYAdj.current[6] * (cc == "a7" ? 20 : 1))}%`})
+      setA1Pos({backgroundPosition: `${seventh * (7 - parseInt(order[6].substring(1))) + squeventh + (posXAdj.current[0] * posLerp.current[0] * magLerp.current[0])}% ${50 + (posYAdj.current[0] * posLerp.current[0] * magLerp.current[0])}%`})
+      setA2Pos({backgroundPosition: `${seventh * (7 - parseInt(order[5].substring(1))) + squeventh + (posXAdj.current[1] * posLerp.current[1] * magLerp.current[1])}% ${50 + (posYAdj.current[1] * posLerp.current[1] * magLerp.current[1])}%`})
+      setA3Pos({backgroundPosition: `${seventh * (7 - parseInt(order[4].substring(1))) + squeventh + (posXAdj.current[2] * posLerp.current[2] * magLerp.current[2])}% ${50 + (posYAdj.current[2] * posLerp.current[2] * magLerp.current[2])}%`})
+      setA4Pos({backgroundPosition: `${seventh * (7 - parseInt(order[3].substring(1))) + squeventh + (posXAdj.current[3] * posLerp.current[3] * magLerp.current[3])}% ${50 + (posYAdj.current[3] * posLerp.current[3] * magLerp.current[3])}%`})
+      setA5Pos({backgroundPosition: `${seventh * (7 - parseInt(order[2].substring(1))) + squeventh + (posXAdj.current[4] * posLerp.current[4] * magLerp.current[4])}% ${50 + (posYAdj.current[4] * posLerp.current[4] * magLerp.current[4])}%`})
+      setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * posLerp.current[5] * magLerp.current[5])}% ${50 + (posYAdj.current[5] * posLerp.current[5] * magLerp.current[5])}%`})
+      setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * posLerp.current[6] * magLerp.current[6])}% ${50 + (posYAdj.current[6] * posLerp.current[6] * magLerp.current[6])}%`})
     }
     window.requestAnimationFrame(slide);
     lastMousePos = mousePosX.current;
