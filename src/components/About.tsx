@@ -11,6 +11,7 @@ export default function About(){
   let squish:number = 1;
   let order:string[] = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
   let speed:number = 1;
+  let direction:number = 1;
   let mousePosX = useRef<number>(0);
   let mousePosY = useRef<number>(0);
   let lastMousePos:number = 0;
@@ -71,7 +72,8 @@ export default function About(){
   }
   function handleMouseUp(e:any){
     const thisCheck:number = getTarget(e)
-    if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
+    if (thisCheck == checked.current) uncheck()
+    else if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
       toCheck = e.target.previousElementSibling
       if (toCheck) {
         toCheck.checked = true
@@ -83,6 +85,22 @@ export default function About(){
     if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
     clickTarget = 0;
     mousePosX.current = e.clientX;
+  }
+  
+  function getTarget(e:any){
+    if (e.target.classList.contains("item")) return 8;
+    else if (e.target.classList.contains("c")) return parseInt(e.target.parentElement.className.substring(6));
+    else return 0;
+  }
+  function uncheck(){
+    // let temp:HTMLInputElement|null = document.querySelector('input[name="cards"]:checked')
+    if (toCheck) {
+      toCheck.checked = false
+      toCheck = null
+    }
+    const temp = checked.current
+    window.requestAnimationFrame(t => lerpDown(t, t, temp, posXAdj.current[checked.current - 1], posYAdj.current[checked.current - 1], 2))
+    checked.current = 0
   }
 
   function mouseCoords(e:any){
@@ -174,22 +192,6 @@ export default function About(){
     } 
   }
 
-  function getTarget(e:any){
-    if (e.target.classList.contains("item")) return 8;
-    else if (e.target.classList.contains("c")) return parseInt(e.target.parentElement.className.substring(6));
-    else return 0;
-  }
-  function uncheck(){
-    // let temp:HTMLInputElement|null = document.querySelector('input[name="cards"]:checked')
-    if (toCheck) {
-      toCheck.checked = false
-      toCheck = null
-    }
-    const temp = checked.current
-    window.requestAnimationFrame(t => lerpDown(t, t, temp, posXAdj.current[checked.current - 1], posYAdj.current[checked.current - 1], 2))
-    checked.current = 0
-  }
-
   useEffect(() => {
     if (active.current) requestAnimationFrame(slide)
     return () => {active.current = false}
@@ -211,7 +213,9 @@ export default function About(){
       }
       else if (hoverTarget && Math.abs(speed) > 0.5) speed *= 0.95
       else if (Math.abs(speed) > 1.1) speed *= 0.99
-      else if (Math.abs(speed) < 1) speed += speed < 0 ? -0.015 : 0.015;
+      else if (Math.abs(speed) < 1) speed += speed < 0 || direction < 0 ? -0.015 : 0.015;
+      if (speed < 0) direction = -1
+      else if ( speed > 0) direction = 1
       if (Math.abs(speed) > 0.05){
         squish += (speed / 120) // this is what ultimately controls the speed
         if (squish < 0){
