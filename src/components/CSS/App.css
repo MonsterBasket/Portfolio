@@ -3,13 +3,14 @@ html{
 }
 body{
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 .App{
   text-align: center;
 }
 .splashContainer{
   position: relative;
-  height: calc(100vh + 1px);
+  height: 100vh;
 }
 .splash{
   position: absolute;
@@ -20,8 +21,13 @@ body{
   z-index: 10;
 }
 /* -------------------- Menu --------------------- */
+.menuCont{
+  position:absolute;
+  width: 100%;
+  height: 200vh;
+}
 #menu{
-  position: fixed;
+  position: sticky;
   display: block;
   left: 0%;
   width: 100%;
@@ -134,7 +140,7 @@ article{
   height: 100%;
   font-size: min(2vw, 2vh);
 }
-#About, .tabTop0{
+#About, .tabTop3{
   background-color: #5f6f3a;
 }
 #Projects, .tabTop1{
@@ -143,14 +149,14 @@ article{
 #Animation, .tabTop2{
   background-color: #d8af7f;
 }
-#Contact, .tabTop3{
+#Contact, .tabTop0{
   background-color: #f5e1b9;
 }
 #Contact, #About{
   overflow: hidden;
 }
 /* Just note that the below button names have the above labels for the user */
-.helloButton .menuButtonPanel{
+.contactButton .menuButtonPanel{
   background-color: #5f6f3a;
 }
 .aboutButton .menuButtonPanel{
@@ -159,7 +165,7 @@ article{
 .projectsButton .menuButtonPanel{
   background-color: #d8af7f;
 }
-.contactButton .menuButtonPanel{
+.helloButton .menuButtonPanel{
   background-color: #f5e1b9;
 }
 a{
@@ -211,7 +217,7 @@ a{
   clip-path: polygon(0 100%, 6% 96%, 11% 83%, 12% 75%, 15% 21%, 17% 11%, 20% 3%, 25% 0, 75% 0, 80% 3%, 83% 11%, 85% 21%, 88% 75%, 89% 83%, 94% 96%, 100% 100%);
   display: inline-block;
   height: 40px;
-  top: 10px;
+  top: 11px;
   line-height: 30px;
   font-size: 1.05em;
   padding: 0;

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
-import Text from "./AboutText"
 
 export default function About(){
 
@@ -238,9 +237,6 @@ export default function About(){
           </div>
         </label>
       </div>
-    </div>
-    <div style={{height: '100%'}}>
-      <Text />
     </div>
   </section>
 }

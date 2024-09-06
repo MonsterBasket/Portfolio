@@ -10,6 +10,15 @@
   grid-template-columns: repeat(7, 1fr);
   grid-template-areas: "a1 a2 a3 a4 a5 a6 a7";
 }
+.backGround{
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+  height: 60%;
+  background-size: cover;
+  background-position: 50% 100%;
+  background-image: radial-gradient(ellipse at 50% 100%, transparent 40%, #5f6f3a 70%), url("../../images/big1.jpg");
+}
 @media only screen and (max-width: 800px){
   #cont{
   width: 200vw;
@@ -89,6 +98,7 @@
   height: 100%;
   top: 0%;
   color: white;
+  text-shadow: 2px 2px 7px black, -2px -2px 7px black, -2px 2px 7px black, 2px -2px 7px black;
   overflow: hidden;
   pointer-events: none;
   transition: 1s;
@@ -109,7 +119,7 @@
   justify-content: flex-end;
   flex-direction: column;
   transition: 1s;
-  background: no-repeat linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  /* background: no-repeat linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); */
   background-position-y: 100px;
 }
 .card:hover .h3, [type=radio]:checked + .card .h3{
@@ -188,3 +198,4 @@
 .a5 .cardImage{background-image: url("../../images/carousel5.jpg")}
 .a6 .cardImage{background-image: url("../../images/carousel6.jpg")}
 .a7 .cardImage{background-image: url("../../images/carousel7.jpg")}
+/* .b1 {background-image: url("../../images/big1.jpg")} */

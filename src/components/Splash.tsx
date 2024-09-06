@@ -7,9 +7,6 @@ type Props = {
 
 function Splash({children}:Props){
 
-
-  const [opacity1, setop1] = useState<number>(1)
-
   const [containerStyle, setContainerStyle] = useState({ overflow: "hidden" })
   const [coverStyle, setCoverStyle] = useState<React.CSSProperties>({opacity: "1", pointerEvents: "auto"})
 

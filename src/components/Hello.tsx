@@ -62,7 +62,6 @@ function Hello(){
     else if (currPos.y < -150 && currPos.y > -350) setRotate(0.5) // stopped
     else if (currPos.y <= -350 && currPos.y >= -500) setRotate((500 + currPos.y) * 1.65 / -500 + 1) // turning
     else if (currPos.y < -500 && currPos.y > -800) setRotate(1) // stopped
-    else setRotate(currPos.y / -500)
     // bg opacity
     if (currPos.y >= -80){
       setop1(1)

@@ -21,10 +21,10 @@ function App() {
         <>
           <Hello />
           <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About", "Projects", "Work", "Contact"]}>
-            <About />
+            <Contact />
             <Projects />
             <Animation />
-            <Contact />
+            <About />
           </Tabs>
 
           <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>

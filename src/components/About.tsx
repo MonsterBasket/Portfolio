@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
-import Text from "./AboutText"
 
 export default function About(){
 
@@ -259,6 +258,7 @@ export default function About(){
 
 
   return <section id="About">
+    <div className="backGround b1"></div>
     <div id="cont" onDragStart={e => e.preventDefault} onDrop={e => e.preventDefault} style={contStyle}>
       <div className="item a1">
         <input id="a1" onClick={handleMouseDown} type="radio" name="cards" />
@@ -324,8 +324,7 @@ export default function About(){
         </div>
       </div>
     </div>
-    <div style={{height: '100%'}}>
-      <Text />
-    </div>
+    <a href="https://www.linkedin.com/in/james-blaskett/">LinkedIn</a><br/><br/>
+    <a href="mailto:jmblasket@gmail.com" target="_blank">Email</a>
   </section>
 }

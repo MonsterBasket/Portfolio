@@ -17,7 +17,7 @@
   max-height: 80vw;
   left: 10px;
   z-index: 5;
-  bottom: 0px;
+  bottom: -5px;
   background:rgb(98, 49, 34);
   clip-path: var(--base);
   animation-delay: -0.5s;
@@ -79,4 +79,40 @@
 @keyframes leafSpin3{
   0% {transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);}
   100% {transform: rotateX(360deg) rotateZ(360deg) rotateY(720deg);}
+}
+/*------------- text -----------------*/
+.text{
+  position: absolute;
+  height: 100%;
+  top: 0%;
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 90% 5% 5%;
+  grid-template-areas: "t1 t2 t3";
+  transition: 1s;
+}
+.text .textTop{
+  position: absolute;
+  width: 100vw;
+  height: 4vh;
+  top: 0%;
+  background: linear-gradient(180deg, #f5e1b9 0%, #f5e1b900 100%);
+}
+.t1{grid-area: t1;}
+.t2{grid-area: t2;}
+.t3{grid-area: t3;}
+.text div{
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  transition: 1s;
+  z-index: 8;
+}
+.text div div{
+  display: flex;
+  width: calc(90vw - var(--scrollbar-width));
+  padding: 2% 5vw;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
