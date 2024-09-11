@@ -31,6 +31,9 @@ export default function About(){
   const trans = useRef<number>(1);
   const seventh:number = 100 / 7;
   let squeventh:number = seventh;
+  const bg = useRef<string>("")
+  const bgOp = useRef<number>(0)
+  let bgtimer:ReturnType<typeof setTimeout>;
 
   const [contStyle, setContStyle] = useState<object>({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
   const [a1Pos, setA1Pos] = useState<object>({backgroundPosition: "50% 50%"})
@@ -79,6 +82,9 @@ export default function About(){
         checked.current = thisCheck;
         cancelAnimationFrame(lerpReset.current[thisCheck - 1])
         window.requestAnimationFrame(t => lerpUp(t, t, thisCheck, thisCheck))
+        clearTimeout(bgtimer)
+        bg.current = "b" + checked.current
+        bgOp.current = 1
       }
     }
     if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
@@ -96,6 +102,8 @@ export default function About(){
     if (toCheck) {
       toCheck.checked = false
       toCheck = null
+      bgtimer = setTimeout(() => bg.current = "", 1000)
+      bgOp.current = 0
     }
     const temp = checked.current
     window.requestAnimationFrame(t => lerpDown(t, t, temp, posXAdj.current[checked.current - 1], posYAdj.current[checked.current - 1], 2))
@@ -258,7 +266,7 @@ export default function About(){
 
 
   return <section id="About">
-    <div className="backGround b1"></div>
+    <div className={`backGround ${bg.current}`} style={{opacity: bgOp.current}}></div>
     <div id="cont" onDragStart={e => e.preventDefault} onDrop={e => e.preventDefault} style={contStyle}>
       <div className="item a1">
         <input id="a1" onClick={handleMouseDown} type="radio" name="cards" />
