@@ -24,7 +24,22 @@ export default function Contact(){
   const [t3Style, setT3Style] = useState<object>({background: "rgba(0,0,0,0.2"})
 
 
-  useEffect(() => makeLeaves, [])
+  useEffect(() => {
+    // callback function to call when event triggers
+    const onPageLoad = () => {
+      makeLeaves()
+    };
+
+    // Check if the page has already loaded
+    if (document.readyState === 'complete') {
+      onPageLoad();
+    } else {
+      window.addEventListener('load', onPageLoad, false);
+      // Remove the event listener when component unmounts
+      return () => window.removeEventListener('load', onPageLoad);
+    }
+  }, []);
+
 
   useEffect(() => {
     requestAnimationFrame((now) => animate(now))
@@ -44,7 +59,6 @@ export default function Contact(){
 
   function move(col:number){
     gust(page.current, col)
-    console.log(page.current, col)
     if (col == 1) {
       page.current = 1
       setTextWidth({gridTemplateColumns: "90% 5% 5%"})

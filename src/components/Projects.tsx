@@ -3,6 +3,7 @@ import "./CSS/projects.css"
 import monster from "../images/screengrab.png"
 import typing from "../images/typing.png"
 import battleship from "../images/battleship.png"
+import Typing from "./Typing";
 
 function Projects(){
   const [panel1, setPanel1] = useState<string>(window.innerHeight > window.innerWidth ? "projTop" : "projLeft")
@@ -32,7 +33,8 @@ function Projects(){
   }
 
   const project1:ReactElement = <img className={`project project${position[0]}`} src={monster}></img>
-  const project2:ReactElement = <img className={`project project${position[1]}`} src={typing}></img>
+  // const project2:ReactElement = <img className={`project project${position[1]}`} src={typing}></img>
+  const project2:ReactElement = <div className={`project project${position[1]}`}><Typing/></div>
   const project3:ReactElement = <img className={`project project${position[2]}`} src={battleship}></img>
 
   // const disclaimer:ReactElement = <img src={disclaimerImg} style={{width:"100%"}}></img>
