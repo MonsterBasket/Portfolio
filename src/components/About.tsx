@@ -332,7 +332,7 @@ export default function About(){
         </div>
       </div>
     </div>
-    <a href="https://www.linkedin.com/in/james-blaskett/">LinkedIn</a><br/><br/>
-    <a href="mailto:jmblasket@gmail.com" target="_blank">Email</a>
+    {/* <a href="https://www.linkedin.com/in/james-blaskett/">LinkedIn</a><br/><br/>
+    <a href="mailto:jmblasket@gmail.com" target="_blank">Email</a> */}
   </section>
 }

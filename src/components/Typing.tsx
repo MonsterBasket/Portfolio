@@ -1,29 +1,37 @@
-import { Fragment, ReactElement, useEffect, useRef, useState } from "react"
+import { ReactElement, useEffect, useRef, useState } from "react"
 import { v4 as uuid } from 'uuid';
 import "./CSS/typing.css"
 
 type Props = {
   right: string;
   left: string;
+  time: number;
 }
 
-function Word({right, left}: Props) {
+function Word({right, left, time}: Props) {
   let first = true
   let leftClass = left.length ? "typedLetters" : ""
   let rightClass = left.length ? "untypedLetters" : "preLetters"
-  const letters = useRef<ReactElement[]>([])
-  const liveWord = useRef<ReactElement>(<>
+  const letters = useRef<ReactElement[] | null[]>([])
+  const liveWord = useRef<ReactElement | null>(<>
     <span className={leftClass}>{left}</span>
     <span className={rightClass}>{right}</span>
   </>)
   const [, rerender] = useState<string[]>([])
+
+  const jumpH = useRef<number[]>([])
+  const jumpW = useRef<number[]>([])
+  interface jumpS2 {left: string, top: string, transform: string, animationDelay: string}
+  interface jumpS { [index: number]: jumpS2}
+  const jumpS = useRef<jumpS>([])
+  const [jumpK, setJumpK] = useState<string[]>([])
+
 
   useEffect(() => {
     if (first){
       first = false
     }
     else if (leftClass === ""){
-      console.log(leftClass)
       leftClass = "typedLetters"
       rightClass = "untypedLetters"
     }
@@ -31,26 +39,67 @@ function Word({right, left}: Props) {
     rerender([])
   }, [right])
 
-  useEffect(() => {
-    setTimeout(() => explode(), 4000)
-  },[])
   function explode() {
-    // const x = pos.left - ((pos.left - pos.right) * 0.2)
     const word = left + right
-    for (let i = 0; i < word.length; i++) {
-      letters.current[i] = <span key={i} className="deadLetters" style={{left:`${i * 10}px`}}>{word.charAt(i)}</span>
-        // jump(letter, (i-word.length / 2)+0.5);
-    }
-    // realWord.current = <div>hello</div>
     right = ""
     left = ""
+
+    for (let i = 0; i < word.length; i++) {
+      jumpH.current[i] = 0
+      jumpW.current[i] = i / 2 + 0.2
+      let newK = jumpK
+      newK[i] = uuid()
+      setJumpK(newK)
+      jumpS.current[i] = {left:`${jumpW.current[i]}em`, top:`${jumpH.current[i]}em`, transform:"rotateZ(0deg)", animationDelay:"0ms"}
+      letters.current[i] = <div key={newK[i]} style={jumpS.current[i]}>{word.charAt(i)}</div>
+      const targetHeight = (-Math.abs(i / (word.length - 1) - 0.5) - 3) - (Math.random() * 2)
+      const horizontalSpeed = ((i - (word.length / 2)) + (Math.random())) / 8
+      jump(targetHeight, horizontalSpeed, word.charAt(i), i)
+    }
     leftClass = "noLetters"
     rightClass = "noLetters"
-    liveWord.current = <div>{letters.current.map(l => l)}</div>
+    setTimeout(() => {
+      liveWord.current = <>{letters.current.map(l => l)}</>
+      rerender([])
+    }, 0)
     setTimeout(() => letters.current = [], 2000)
   }
-  // return letters.current.length > 0 ? deadWord : liveWord
-  return liveWord.current
+
+  function jump(ht:number, hs:number, letter:string, i:number, delay:number = 0, val:number = hs, vs:number = 0.2){
+    if (ht < 0)
+      jumpH.current[i] += (ht - jumpH.current[i]) * 0.2
+    // else if (jumpH.current[i] > 30)
+    //   jumpH.current[i] *= 1.1
+    else {
+      jumpH.current[i] += vs //(h*0.7 / (h*0.7 - jumpH.current[i])) * 0.4 // (h - jumpH.current[i]) * .1 // vertical speed, increase until target (h) reached, then decrease
+      vs *= 1.1
+    }
+    jumpW.current[i] += hs // horizontal speed, slow degradation
+    let newK = jumpK
+    newK[i] = uuid()
+    setJumpK(newK)
+    jumpS.current[i] = {left:`${jumpW.current[i]}em`, top:`${jumpH.current[i]}em`, transform:`rotateZ(${val * 20 * -delay}deg)`, animationDelay:`${delay}ms`}
+    delay -= 16
+    letters.current[i] = <div key={newK[i]} style={jumpS.current[i]}>{letter}</div>
+    setTimeout(() => {
+      liveWord.current = <>{letters.current.map(l => l)}</>
+      rerender([])
+    }, 0)
+    // hs *= 0.95
+    if (ht < 0 && ht - jumpH.current[i] > -0.3) ht = 30
+    if (ht != 30 || jumpH.current[i] < ht){
+      // if (i == 1) console.log(l, jumpH.current[i])
+      setTimeout((ht, hs, letter, i, delay, val, vs) => requestAnimationFrame(() => jump(ht,hs,letter,i,delay,val, vs)), 16, ht, hs, letter, i, delay, val, vs) //no performance adjustment, but eh.
+    }
+    else {
+      letters.current[i] = null
+      for (let i = 0; i < letters.current.length; i++) {
+        if (letters.current[i] != null) break;
+        liveWord.current = null;
+      }
+    }
+  }
+  return liveWord.current ? liveWord.current : null
 }
 
 export default function Typing(){
@@ -64,7 +113,7 @@ export default function Typing(){
 
   const [r,rerender] = useState<[]>([])
 
-  interface keys2 {key: string, left: string, right: string, top: number}
+  interface keys2 {key: string, left: string, right: string, top: number, time: number}
   interface keysInfo { [index: string]: keys2; }
   const [keys, setKeys] = useState<keysInfo>({})
   const key = useRef<string>("")
@@ -86,7 +135,7 @@ export default function Typing(){
     }
   }, [])
   function createWord() { 
-    console.log(Object.keys(keys))
+    // console.log(Object.keys(keys))
     let newIndex = Math.floor(Math.random() * (allWords.length - 1))
     while (allWords[newIndex].charAt(0) in keys){
       newIndex += 1
@@ -95,27 +144,27 @@ export default function Typing(){
     const newWord:string = allWords[newIndex]
     key.current = newWord.charAt(0)
     let newKeys = keys
-    newKeys[key.current] = {key: uuid(), right: newWord, left: "", top: Math.random() * 90 + 5}
+    newKeys[key.current] = {key: uuid(), right: newWord, left: "", top: Math.random() * 90 + 5, time: Date.now()}
     setKeys(newKeys)
     rerender([])
+    // /*
     setTimeout(() => createWord(), 2000); // new word every 2 seconds
-    ((a:string) => { // destroy word after 4 seconds if it still exists, this will move into Word as a self-destruct
-      setTimeout(function(){
+      setTimeout(function(a){
         if (a in keys) {
-          delete keys[a]
+          if (keys[a].right === "") return
+          let newKeys = keys
+          newKeys[a].left += newKeys[a].right
+          newKeys[a].right = ""
+          newKeys[a].key = uuid()
+          setKeys(newKeys)
+          rerender([])
+  
+          setTimeout((a) => delete keys[a], 2000, a) // This is how long the explosion animation lasts
           if (target === a) target = null
         }
-      }, 6000);
-    })(newWord.charAt(0));
+      }, 4000, newWord.charAt(0)); // destroy after 4 seconds and then remove elements after 2 seconds (setTimeout above)
+    // */
   }
-  // useEffect(() => {
-  //   if (!key.current) return
-  //   let newWords = words
-  //   console.log(keys[key.current])
-  //   newWords[key.current] = <Word key={keys[key.current].key} right={keys[key.current].right} left={keys[key.current].left}/>
-  //   setWords(newWords);
-  //   key.current = ""
-  // }, [r])
 
   function typing(e:any){
     if(e.keyCode === 32) { //spacebar - this prevents page scroll when space is pressed
@@ -134,7 +183,6 @@ export default function Typing(){
     }
     else { // --------- or if it didn't fail, start doing things
       if (key === keys[target].right.charAt(0)){
-        console.log(key, keys[target])
         let newKeys = keys
         newKeys[target].left += newKeys[target].right.charAt(0)
         newKeys[target].right = keys[target].right.slice(1)
@@ -157,9 +205,9 @@ export default function Typing(){
   }
 
   return <div className="typebg">
-    {/* {Object.keys(words).map(k => <div key={k} className="words move" style={{top:`${keys[k].top}%`}}>{words[k]}</div>)} */}
-    {Object.keys(keys).map(k => <div key={k} className="words move" style={{top:`${keys[k].top}%`}}>
-      <Word key = {keys[k].key} right = {keys[k].right} left = {keys[k].left} />
+    {Object.keys(keys).map(k => <div key={k} className={"words move" + (keys[k].right ? "" : " paused")} style={{top:`${keys[k].top}%`}}>
+      <Word key = {keys[k].key} right = {keys[k].right} left = {keys[k].left} time = {keys[k].time}/>
     </div>)}
+    <div className="typebgside"/>
   </div>
 }
