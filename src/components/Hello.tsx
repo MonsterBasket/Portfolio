@@ -16,6 +16,8 @@ function Hello(){
   const [bothPanelTop, setBPT] = useState<number>(0)
   const [rightPanelLeft, setRPL] = useState<number>(0)
 
+  const bgNone = useRef<string>("")
+
 
   useEffect(() => updateScreen, [])
   useEffect(() => {
@@ -62,6 +64,8 @@ function Hello(){
     else if (currPos.y < -150 && currPos.y > -350) setRotate(0.5) // stopped
     else if (currPos.y <= -350 && currPos.y >= -500) setRotate((500 + currPos.y) * 1.65 / -500 + 1) // turning
     else if (currPos.y < -500 && currPos.y > -800) setRotate(1) // stopped
+    if (currPos.y < -500) bgNone.current = "bgNone"
+    else if (bgNone.current == "bgNone") bgNone.current = ""
     // bg opacity
     if (currPos.y >= -80){
       setop1(1)
@@ -101,13 +105,13 @@ function Hello(){
       <div className="helloSpinLeft">
         <div style={front} className='helloSpinPanel panel1' ref={leftPanel}> </div>
         <div style={bottom} className='helloSpinPanel panel2 middleBorder'>I am&#8202;</div>
-        <div style={back} className='helloSpinPanel panel3'>I'm a&#8202;</div>
+        <div style={back} className={'helloSpinPanel panel3 ' + (bgNone.current)}>I'm a&#8202;</div>
         <div style={right} className='helloSpinPanelRight'> </div>
       </div>
       <div className="helloSpin">
         <div style={frontRight} className='helloSpinPanel panel1'>&#8202;Hello</div>
         <div style={bottomRight} className='helloSpinPanel panel2 middleBorder'>&#8202;James</div>
-        <div style={backRight} className='helloSpinPanel panel3'>&#8202;Software Engineer</div>
+        <div style={backRight} className={'helloSpinPanel panel3 ' + (bgNone.current)}>&#8202;Software Engineer</div>
       </div>
     </div>
   </section>

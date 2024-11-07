@@ -54,7 +54,16 @@ export default function About(){
 
   useEffect(() => {
     window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
-    window.addEventListener('pointerdown', handleMouseDown);
+    // window.addEventListener('pointerdown', handleMouseDown);
+
+
+    window.addEventListener('pointerdown', function(e:any) {
+      handleMouseDown(e)
+      if (e.target.hasPointerCapture(e.pointerId)) {
+          e.target.releasePointerCapture(e.pointerId);
+      }
+    })
+
     window.addEventListener('pointerup', handleMouseUp);
     return () =>{
       window.removeEventListener('pointermove', mouseCoords);

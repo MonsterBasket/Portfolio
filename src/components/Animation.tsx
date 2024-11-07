@@ -16,12 +16,12 @@ function Animation(){
     setPagePos([pagePos[num(0)], pagePos[num(1)], pagePos[num(2)], pagePos[num(3)], pagePos[num(4)], pagePos[num(5)]])
     setDescPos([descPos[num(0)], descPos[num(1)], descPos[num(2)], descPos[num(3)], descPos[num(4)], descPos[num(5)]])
   }
-  const alleyUrl:string = "" // "https://player.vimeo.com/video/5008288?h=22815a5165"
-  const cookiesUrl:string = "" // "https://www.youtube.com/embed/XRhsOcLPqiQ?si=wbU0P8G8_0sTDUb6"  
-  const matteUrl:string = "" // "https://youtube.com/embed/6Q-97PUTFZo?si=V3gneftIKLd2Nfk0"
-  const showreelUrl:string = "" // "https://player.vimeo.com/video/35045360?h=02bc212f2a"
-  const gearsUrl:string = "" // "https://www.youtube.com/embed/T0VNYxlmUbQ?si=jcFYfyD0epqUukZX"
-  const hairUrl:string = "" // "https://www.youtube.com/embed/D81XrEyneAA?si=jFrUNLEuW4z46LJd"
+  const alleyUrl:string = "https://player.vimeo.com/video/5008288?h=22815a5165"
+  const cookiesUrl:string = "https://www.youtube.com/embed/XRhsOcLPqiQ?si=wbU0P8G8_0sTDUb6"  
+  const matteUrl:string = "https://youtube.com/embed/6Q-97PUTFZo?si=V3gneftIKLd2Nfk0"
+  const showreelUrl:string = "https://player.vimeo.com/video/35045360?h=02bc212f2a"
+  const gearsUrl:string = "https://www.youtube.com/embed/T0VNYxlmUbQ?si=jcFYfyD0epqUukZX"
+  const hairUrl:string = "https://www.youtube.com/embed/D81XrEyneAA?si=jFrUNLEuW4z46LJd"
   const alley:ReactElement = <iframe src={alleyUrl} width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture" />
   const alleyDesc:string = `Brief: A 6 second abstract video synced to a music clip promoting a school event "Kick the Vendor".  I modelled the alleyway to match the photo and used (too many?) dynamic particles with physics.`
   const cookies:ReactElement = <iframe width="100%" height="100%" src={cookiesUrl} title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />

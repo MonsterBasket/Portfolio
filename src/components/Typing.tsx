@@ -144,7 +144,7 @@ export default function Typing(){
     const newWord:string = allWords[newIndex]
     key.current = newWord.charAt(0)
     let newKeys = keys
-    newKeys[key.current] = {key: uuid(), right: newWord, left: "", top: Math.random() * 90 + 5, time: Date.now()}
+    newKeys[key.current] = {key: uuid(), right: newWord, left: "", top: Math.random() * 85 + 5, time: Date.now()}
     setKeys(newKeys)
     rerender([])
     // /*

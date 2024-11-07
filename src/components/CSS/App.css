@@ -126,6 +126,9 @@ body{
   background: url("../../images/trees.jpg") 0 0 /1920px;
   color:#99865f;
 }
+.panel3.bgNone{
+  background: none;
+}
 /* ------------------- Tabs (mostly) --------------- */
 section{
   height: calc(100% - 50px);
