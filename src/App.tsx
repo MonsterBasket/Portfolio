@@ -20,11 +20,11 @@ function App() {
       <Splash>
         <>
           <Hello />
-          <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} names={["About", "Projects", "Work", "Contact"]}>
-            <Contact />
-            <Projects />
-            <Animation />
-            <About />
+          <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} setTurnToCheat={setTurnToCheat} names={["About", "Projects", "Work", "Contact"]}>
+            <Contact turnToCheat={turnToCheat} />
+            <Projects turnToCheat={turnToCheat} />
+            <Animation turnToCheat={turnToCheat} />
+            <About turnToCheat={turnToCheat} />
           </Tabs>
 
           <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>

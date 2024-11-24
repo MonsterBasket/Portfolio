@@ -4,11 +4,12 @@ type Props = {
   buttonWidth: number;
   buttonOpacity: number;
   turnToCheat: number;
+  setTurnToCheat: (val: number) => void;
   names: string[];
   children: React.ReactElement|React.ReactElement[]
 }
 
-export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, children}: Props) {
+export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, setTurnToCheat, names, children}: Props) {
 
   buttonWidth *= 1.35;
   let tabMorph:number = -Math.min(Math.max(1.5 - buttonOpacity -1, 0), 1);
@@ -26,6 +27,7 @@ export default function Tabs({buttonWidth, buttonOpacity, turnToCheat, names, ch
       quickTurn = true;
       //skip animation and just change z index?
     }
+    setTurnToCheat(page)
     if (tab[page] != "Front"){ //clicking on front tab does nothing
       let temptab:string[] = tab;
       for (let i = 0; i < 4; i++) {

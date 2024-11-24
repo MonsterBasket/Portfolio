@@ -1,7 +1,14 @@
 import { ReactElement, useEffect, useRef, useState } from "react"
 import "./CSS/contact.css"
 
-export default function Contact(){
+type Props = {turnToCheat: number;}
+
+export default function Contact({turnToCheat}: Props){
+  const active = useRef<boolean>(false)
+  useEffect(() => {
+    if(turnToCheat == 0) active.current = true
+    else active.current = false;
+  }, [turnToCheat])
   const [delay, setDelay] = useState<number>(0)
   const lastRender = useRef<number>(0)
   const sway = useRef<number>(0.5);
@@ -42,16 +49,22 @@ export default function Contact(){
 
 
   useEffect(() => {
-    requestAnimationFrame((now) => animate(now))
-  }, [])
+    if(active.current) requestAnimationFrame((now) => animate(now))
+  }, [active.current])
   useEffect(() => {
-    window.addEventListener('mousemove', mouseCoords);
-    window.addEventListener('devicemotion', handleOrientation, true);
+    if (active.current){
+      window.addEventListener('mousemove', mouseCoords);
+      window.addEventListener('devicemotion', handleOrientation, true);
+    }
+    else {
+      window.removeEventListener('mousemove', mouseCoords);
+      window.removeEventListener('devicemotion', handleOrientation, true);
+    }
     return () => {
       window.removeEventListener('mousemove', mouseCoords);
       window.removeEventListener('devicemotion', handleOrientation, true);
     };
-  }, []);
+  }, [active.current]); 
 
   useEffect(() => {
     document.documentElement.style.setProperty('--scrollbar-width', (window.innerWidth - document.documentElement.clientWidth) + "px");
@@ -148,7 +161,7 @@ export default function Contact(){
         }
       }
     }
-    setTimeout(() => requestAnimationFrame((now) => animate(now)), 33)
+    if (active.current) setTimeout(() => requestAnimationFrame((now) => animate(now)), 33)
   }
 
   

@@ -1,11 +1,18 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import "./CSS/projects.css"
 import monster from "../images/screengrab.png"
 import typing from "../images/typing.png"
 import battleship from "../images/battleship.png"
 import Typing from "./Typing";
 
-function Projects(){
+type Props = {turnToCheat: number;}
+
+export default function Projects({turnToCheat}: Props){
+  const active = useRef<boolean>(false)
+  useEffect(() => {
+    if(turnToCheat == 1) active.current = true
+    else active.current = false;
+  }, [turnToCheat])
   const [panel1, setPanel1] = useState<string>(window.innerHeight > window.innerWidth ? "projTop" : "projLeft")
   const [panel2, setPanel2] = useState<string>(window.innerHeight > window.innerWidth ? "projBottom" : "projRight")
   const [position, setPosition] = useState<number[]>([1,2,3])
@@ -86,5 +93,3 @@ function Projects(){
         </div>
   </section>
 }
-
-export default Projects;

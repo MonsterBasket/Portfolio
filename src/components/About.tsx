@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
 
-export default function About(){
+type Props = {turnToCheat: number;}
 
-  const active = useRef<boolean>(true)
+export default function About({turnToCheat}: Props){
 
+  const active = useRef<boolean>(false)
+  useEffect(() => {
+    if(turnToCheat == 3) active.current = true
+    else active.current = false;
+  }, [turnToCheat])
   // const [squish, setSquish] = useState<number>(1);
   // const [order, setOrder] = useState<string[]>(["a1", "a2", "a3", "a4", "a5", "a6", "a7"]);
   let squish:number = 1;
@@ -53,24 +58,30 @@ export default function About(){
 
 
   useEffect(() => {
-    window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
-    // window.addEventListener('pointerdown', handleMouseDown);
+    if (active.current){
+      window.addEventListener('pointermove', mouseCoords); // This needs some serious work for mobile devices.
+      // window.addEventListener('pointerdown', handleMouseDown);
 
+      window.addEventListener('pointerdown', function(e:any) {
+        handleMouseDown(e)
+        if (e.target.hasPointerCapture(e.pointerId)) {
+            e.target.releasePointerCapture(e.pointerId);
+        }
+      })
 
-    window.addEventListener('pointerdown', function(e:any) {
-      handleMouseDown(e)
-      if (e.target.hasPointerCapture(e.pointerId)) {
-          e.target.releasePointerCapture(e.pointerId);
-      }
-    })
-
-    window.addEventListener('pointerup', handleMouseUp);
+      window.addEventListener('pointerup', handleMouseUp);
+    }
+    else{
+      window.removeEventListener('pointermove', mouseCoords);
+      window.removeEventListener('pointerdown', handleMouseDown);
+      window.removeEventListener('pointerup', handleMouseUp);
+    }
     return () =>{
       window.removeEventListener('pointermove', mouseCoords);
       window.removeEventListener('pointerdown', handleMouseDown);
       window.removeEventListener('pointerup', handleMouseUp);
     }
-  }, [])
+  }, [active.current])
 
   function handleMouseDown(e:any){
     clickTarget = getTarget(e)
@@ -210,8 +221,7 @@ export default function About(){
 
   useEffect(() => {
     if (active.current) requestAnimationFrame(slide)
-    return () => {active.current = false}
-  }, [active])
+  }, [active.current])
   function slide(timeStamp:number){
     if(timeStamp - lastTime > 16) {
       lastTime = timeStamp;
@@ -253,7 +263,8 @@ export default function About(){
       setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * posLerp.current[5] * magLerp.current[5])}% ${50 + (posYAdj.current[5] * posLerp.current[5] * magLerp.current[5])}%`})
       setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * posLerp.current[6] * magLerp.current[6])}% ${50 + (posYAdj.current[6] * posLerp.current[6] * magLerp.current[6])}%`})
     }
-    window.requestAnimationFrame(slide);
+    if (active.current) window.requestAnimationFrame(slide);
+    console.log("playing")
     lastMousePos = mousePosX.current;
   }
 
