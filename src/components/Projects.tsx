@@ -8,14 +8,14 @@ import Typing from "./Typing";
 type Props = {turnToCheat: number;}
 
 export default function Projects({turnToCheat}: Props){
-  const active = useRef<boolean>(false)
-  useEffect(() => {
-    if(turnToCheat == 1) active.current = true
-    else active.current = false;
-  }, [turnToCheat])
   const [panel1, setPanel1] = useState<string>(window.innerHeight > window.innerWidth ? "projTop" : "projLeft")
   const [panel2, setPanel2] = useState<string>(window.innerHeight > window.innerWidth ? "projBottom" : "projRight")
   const [position, setPosition] = useState<number[]>([1,2,3])
+  const active = useRef<number>(2)
+  useEffect(() => {
+    if(turnToCheat == 1) active.current = position[1]
+    else active.current = -1;
+  }, [turnToCheat, position])
 
   useEffect(() => {
     window.addEventListener('resize', updateScreen);
@@ -34,14 +34,14 @@ export default function Projects({turnToCheat}: Props){
   function change(num:number){
     let temp:number[] = []
     if (num == 0) temp = [3,1,2]
-    if (num == 1) temp = [1,2,3]
-    if (num == 2) temp = [2,3,1]
+    else if (num == 1) temp = [1,2,3]
+    else if (num == 2) temp = [2,3,1]
     setPosition([...temp])
   }
 
   const project1:ReactElement = <img className={`project project${position[0]}`} src={monster}></img>
   // const project2:ReactElement = <img className={`project project${position[1]}`} src={typing}></img>
-  const project2:ReactElement = <div className={`project project${position[1]}`}><Typing/></div>
+  const project2:ReactElement = <div className={`project project${position[1]}`}><Typing active={position[1] == 2 ? true : false}/></div>
   const project3:ReactElement = <img className={`project project${position[2]}`} src={battleship}></img>
 
   // const disclaimer:ReactElement = <img src={disclaimerImg} style={{width:"100%"}}></img>

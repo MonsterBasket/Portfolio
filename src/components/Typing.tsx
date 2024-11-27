@@ -5,10 +5,10 @@ import "./CSS/typing.css"
 type Props = {
   right: string;
   left: string;
-  time: number;
+  active: boolean;
 }
 
-function Word({right, left, time}: Props) {
+function Word({right, left, active}: Props) {
   let first = true
   let leftClass = left.length ? "typedLetters" : ""
   let rightClass = left.length ? "untypedLetters" : "preLetters"
@@ -102,7 +102,10 @@ function Word({right, left, time}: Props) {
   return liveWord.current ? liveWord.current : null
 }
 
-export default function Typing(){
+type Props2 = {
+  active: boolean;
+}
+export default function Typing({active}: Props2){
 
   let firstTime = useRef<boolean>(true);
   let target:string|null = null;
@@ -206,7 +209,7 @@ export default function Typing(){
 
   return <div className="typebg">
     {Object.keys(keys).map(k => <div key={k} className={"words move" + (keys[k].right ? "" : " paused")} style={{top:`${keys[k].top}%`}}>
-      <Word key = {keys[k].key} right = {keys[k].right} left = {keys[k].left} time = {keys[k].time}/>
+      <Word key = {keys[k].key} right = {keys[k].right} left = {keys[k].left} active = {active}/>
     </div>)}
     <div className="typebgside"/>
   </div>
