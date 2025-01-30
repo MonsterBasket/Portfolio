@@ -1,14 +1,35 @@
 import { ReactElement, useEffect, useRef, useState } from "react"
 import "./CSS/contact.css"
+import { mockComponent } from "react-dom/test-utils";
 
 type Props = {turnToCheat: number;}
 
 export default function Contact({turnToCheat}: Props){
-  const active = useRef<boolean>(false)
+  const active = useRef<boolean>(true)
   useEffect(() => {
-    if(turnToCheat == 0) active.current = true
-    else active.current = false;
+    if(turnToCheat == 0) {
+      active.current = true
+      requestAnimationFrame((now) => animate(now))
+      window.addEventListener('touchstart', handleTouchStart, false);        
+      window.addEventListener('touchmove', handleTouchMove, false);
+      // window.addEventListener('mousemove', mouseCoords);
+      // window.addEventListener('devicemotion', handleOrientation, true);
+    }
+    else {
+      active.current = false;
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+      // window.removeEventListener('mousemove', mouseCoords);
+      // window.removeEventListener('devicemotion', handleOrientation, true);
+    }
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+      // window.removeEventListener('mousemove', mouseCoords);
+      // window.removeEventListener('devicemotion', handleOrientation, true);
+    };  
   }, [turnToCheat])
+
   const [delay, setDelay] = useState<number>(0)
   const lastRender = useRef<number>(0)
   const sway = useRef<number>(0.5);
@@ -16,8 +37,7 @@ export default function Contact({turnToCheat}: Props){
   const mousePos = useRef<number>(0);
   const swayMod = useRef<number>(0)
   const swayModDirection = useRef<number>(0)
-  const leaves:ReactElement[] = []
-  const [renderLeaves, setLeaves] = useState<ReactElement[]>([])
+  const [renderLeaves, setRenderLeaves] = useState<ReactElement[]>([])
   const leafClasses:string[] = ["leaf", "blossom"]
   const leafMoves:string[] = ["leafSway1", "leafSway2", "leafSway3"]
   const leafSpins:string[] = ["leafSpin1", "leafSpin2", "leafSpin3"]
@@ -30,11 +50,14 @@ export default function Contact({turnToCheat}: Props){
   const [t2Style, setT2Style] = useState<object>({background: "rgba(0,0,0,0.1"})
   const [t3Style, setT3Style] = useState<object>({background: "rgba(0,0,0,0.2"})
 
-
+  const xTouch = useRef<number>(0);
+  const yTouch = useRef<number>(0);
+                                                                           
   useEffect(() => {
     // callback function to call when event triggers
     const onPageLoad = () => {
       makeLeaves()
+      requestAnimationFrame((now) => animate(now))
     };
 
     // Check if the page has already loaded
@@ -49,28 +72,47 @@ export default function Contact({turnToCheat}: Props){
 
 
   useEffect(() => {
-    if(active.current) requestAnimationFrame((now) => animate(now))
-  }, [active.current])
-  useEffect(() => {
-    if (active.current){
-      window.addEventListener('mousemove', mouseCoords);
-      window.addEventListener('devicemotion', handleOrientation, true);
-    }
-    else {
-      window.removeEventListener('mousemove', mouseCoords);
-      window.removeEventListener('devicemotion', handleOrientation, true);
-    }
-    return () => {
-      window.removeEventListener('mousemove', mouseCoords);
-      window.removeEventListener('devicemotion', handleOrientation, true);
-    };
-  }, [active.current]); 
-
-  useEffect(() => {
     document.documentElement.style.setProperty('--scrollbar-width', (window.innerWidth - document.documentElement.clientWidth) + "px");
   }, [])
 
+  function handleTouchStart(e:any) {
+    xTouch.current = e.touches[0].clientX;                                      
+    yTouch.current = e.touches[0].clientY;                                      
+  }
+                                                                          
+  function handleTouchMove(e:any) {
+      if ( !xTouch.current || !yTouch.current ) return;
+
+      const xUp = e.touches[0].clientX;                                    
+      const yUp = e.touches[0].clientY;
+
+      const xDiff = xTouch.current - xUp;
+      const yDiff = yTouch.current - yUp;
+                                                                          
+      if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+          if ( xDiff > 0 ) {
+              /* right swipe */ 
+              if (page.current == 3) return
+              move(page.current + 1)
+          } else {
+              /* left swipe */
+              if (page.current == 1) return
+              move(page.current - 1)
+          }                       
+      } else {
+          if ( yDiff > 0 ) {
+              /* down swipe */ 
+          } else { 
+              /* up swipe */
+          }                                                                 
+      }
+      /* reset values */
+      xTouch.current = 0;
+      xTouch.current = 0;                                             
+  }
+
   function move(col:number){
+    if (page.current == col) return
     gust(page.current, col)
     if (col == 1) {
       page.current = 1
@@ -96,12 +138,12 @@ export default function Contact({turnToCheat}: Props){
   }
 
   function gust(from:number, to:number){
-    if (from == to) return
-    else if (from > to) gustTarget.current = -1;
+    if (from > to) gustTarget.current = -1;
     else gustTarget.current = 1;
   }
 
   function makeLeaves(){
+    const leaves:ReactElement[] = []
     for (let i = 0; i < 60; i++) {
       const depth = Math.random() + 0.5;
       const wh = window.innerHeight / 100;
@@ -117,15 +159,15 @@ export default function Contact({turnToCheat}: Props){
         <div className={leafClass} style={{animationName:`${spin}, ${move}`, animationDuration:`${spinSpeed}, ${moveSpeed}`, filter:`blur(${depth * 3 - 2}px)`}}></div>
       </div>
     }
-    setLeaves([...leaves])
+    setRenderLeaves([...leaves])
   }
 
-  function mouseCoords(e:MouseEvent){
-    mousePos.current = e.clientX
-  }
-  function handleOrientation(e:any){
-    if(e.rotationRate.gamma) mousePos.current = Math.round(mousePos.current + e.rotationRate.gamma / 5)
-  }
+  // function mouseCoords(e:MouseEvent){
+  //   mousePos.current = e.clientX
+  // }
+  // function handleOrientation(e:any){
+  //   if(e.rotationRate.gamma) mousePos.current = Math.round(mousePos.current + e.rotationRate.gamma / 5)
+  // }
 
   function animate(now:number){
     now *= 0.01;
@@ -149,12 +191,12 @@ export default function Contact({turnToCheat}: Props){
       setDelay(gust - 0.5 + (tempSwayMod - 0.05))
       sway.current = tempSway
       swayMod.current = tempSwayMod
-      lastmousePos.current = mousePos.current;
-      for (let i = 0; i < leaves.length; i++) {
+      // lastmousePos.current = mousePos.current;
+      for (let i = 0; i < renderLeaves.length; i++) {
         let myLeaf = document.getElementById(`leaf${i}`)
         if (myLeaf) {
           let left = parseFloat(myLeaf.style.left.substring(0, myLeaf.style.left.length - 1))
-          let leftMove = left - ((tempSway + gustSpeed.current) * 2 * (parseFloat(myLeaf.style.zIndex + i / 10) / 30)) // i / 10 gives it a "random" multiplier for each leaf
+          let leftMove = left - ((tempSway + gustSpeed.current) * 2 * (parseFloat(myLeaf.style.zIndex + i / 10) / 30)) // i / 10 gives it a "random" but constant multiplier for each leaf
           if (leftMove > 100) leftMove -= 105
           if (leftMove < -5) leftMove += 105
           myLeaf.style.left = `${leftMove}%`
