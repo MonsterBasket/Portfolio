@@ -108,7 +108,7 @@ export default function Contact({turnToCheat}: Props){
       }
       /* reset values */
       xTouch.current = 0;
-      xTouch.current = 0;                                             
+      yTouch.current = 0;                                             
   }
 
   function move(col:number){
