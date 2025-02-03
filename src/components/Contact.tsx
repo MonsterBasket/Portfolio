@@ -1,35 +1,11 @@
 import { ReactElement, useEffect, useRef, useState } from "react"
 import "./CSS/contact.css"
-import { mockComponent } from "react-dom/test-utils";
 
 type Props = {turnToCheat: number;}
 
 export default function Contact({turnToCheat}: Props){
-  const active = useRef<boolean>(true)
-  useEffect(() => {
-    if(turnToCheat == 0) {
-      active.current = true
-      requestAnimationFrame((now) => animate(now))
-      window.addEventListener('touchstart', handleTouchStart, false);        
-      window.addEventListener('touchmove', handleTouchMove, false);
-      // window.addEventListener('mousemove', mouseCoords);
-      // window.addEventListener('devicemotion', handleOrientation, true);
-    }
-    else {
-      active.current = false;
-      window.removeEventListener('touchstart', handleTouchStart, false);        
-      window.removeEventListener('touchmove', handleTouchMove, false);
-      // window.removeEventListener('mousemove', mouseCoords);
-      // window.removeEventListener('devicemotion', handleOrientation, true);
-    }
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart, false);        
-      window.removeEventListener('touchmove', handleTouchMove, false);
-      // window.removeEventListener('mousemove', mouseCoords);
-      // window.removeEventListener('devicemotion', handleOrientation, true);
-    };  
-  }, [turnToCheat])
 
+  const active = useRef<boolean>(true);
   const [delay, setDelay] = useState<number>(0)
   const lastRender = useRef<number>(0)
   const sway = useRef<number>(0.5);
@@ -52,26 +28,47 @@ export default function Contact({turnToCheat}: Props){
 
   const xTouch = useRef<number>(0);
   const yTouch = useRef<number>(0);
-                                                                           
+
   useEffect(() => {
-    // callback function to call when event triggers
-    const onPageLoad = () => {
-      makeLeaves()
+    console.log(turnToCheat)
+    if(turnToCheat == 0) {
+      active.current = true;
       requestAnimationFrame((now) => animate(now))
-    };
-
-    // Check if the page has already loaded
-    if (document.readyState === 'complete') {
-      onPageLoad();
-    } else {
-      window.addEventListener('load', onPageLoad, false);
-      // Remove the event listener when component unmounts
-      return () => window.removeEventListener('load', onPageLoad);
+      window.addEventListener('touchstart', handleTouchStart, false);        
+      window.addEventListener('touchmove', handleTouchMove, false);
     }
-  }, []);
+    else {
+      active.current = false;
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+    }
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+    };  
+  }, [turnToCheat])
+                                                                           
+  // useEffect(() => {
+  //   // callback function to call when event triggers
+  //   const onPageLoad = () => {
+  //     makeLeaves()
+  //     active.current = true;
+  //     requestAnimationFrame((now) => animate(now))
+  //   };
+
+  //   // Check if the page has already loaded
+  //   if (document.readyState === 'complete') {
+  //     onPageLoad();
+  //   } else {
+  //     window.addEventListener('load', onPageLoad, false);
+  //     // Remove the event listener when component unmounts
+  //     return () => window.removeEventListener('load', onPageLoad);
+  //   }
+  // }, []);
 
 
   useEffect(() => {
+    makeLeaves()
     document.documentElement.style.setProperty('--scrollbar-width', (window.innerWidth - document.documentElement.clientWidth) + "px");
   }, [])
 
@@ -170,6 +167,7 @@ export default function Contact({turnToCheat}: Props){
   // }
 
   function animate(now:number){
+    if (!active.current) return
     now *= 0.01;
     const deltaTime = now - lastRender.current;
     lastRender.current = now;
@@ -203,7 +201,8 @@ export default function Contact({turnToCheat}: Props){
         }
       }
     }
-    if (active.current) setTimeout(() => requestAnimationFrame((now) => animate(now)), 33)
+    console.log("animating leaves", turnToCheat)
+    if (active.current) setTimeout(() => requestAnimationFrame((now) => animate(now)), 16)
   }
 
   

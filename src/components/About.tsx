@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
+import { click } from "@testing-library/user-event/dist/click";
 
 type Props = {turnToCheat: number;}
 
 export default function About({turnToCheat}: Props){
 
-  const active = useRef<boolean>(false)
-  useEffect(() => {
-    if(turnToCheat == 3) active.current = true
-    else active.current = false;
-  }, [turnToCheat])
   // const [squish, setSquish] = useState<number>(1);
   // const [order, setOrder] = useState<string[]>(["a1", "a2", "a3", "a4", "a5", "a6", "a7"]);
   let squish:number = 1;
@@ -40,9 +36,11 @@ export default function About({turnToCheat}: Props){
   const bg = useRef<string>("")
   const bgOp = useRef<number>(0)
   let bgtimer:ReturnType<typeof setTimeout>;
+  let mouseMove = useRef<boolean>(false);
+  let tapping = useRef<boolean>(false);
 
-  const xTouch = useRef<number>(0);
-  const yTouch = useRef<number>(0);
+  // const xTouch = useRef<number>(0);
+  // const yTouch = useRef<number>(0);
 
   const [contStyle, setContStyle] = useState<object>({ gridTemplateAreas: `"${order[0]} ${order[1]} ${order[2]} ${order[3]} ${order[4]} ${order[5]} ${order[6]}"`, gridTemplateColumns: `${squish}fr 1fr 1fr 1fr 1fr 1fr ${1 - squish}fr` })
   const [a1Pos, setA1Pos] = useState<object>({backgroundPosition: "50% 50%"})
@@ -61,7 +59,8 @@ export default function About({turnToCheat}: Props){
   const [a7Angle, setA7Angle] = useState<object>({transform: "rotateX(0deg) rotateY(0deg)", transition: "all 1s, transform 1s"})
 
   useEffect(() => {
-    if (active.current){
+    if (turnToCheat == 3){
+      requestAnimationFrame(slide)
       window.addEventListener('mousemove', mouseCoords, false); // This needs some serious work for mobile devices.
       // window.addEventListener('mousedown', handleMouseDown);
       window.addEventListener('mousedown', function(e:any) {
@@ -91,41 +90,28 @@ export default function About({turnToCheat}: Props){
       window.removeEventListener('touchmove', mouseCoords, false);
       window.removeEventListener('touchend', handleMouseUp, false);
     }
-  }, [active.current])
+  }, [turnToCheat])
 
   function handleMouseDown(e:any){
-    if (e.type == "mousedown" && (xTouch.current || yTouch.current)) return
+    if (tapping.current) return
+    if (e.type == "touchstart") {
+      setTimeout(() => {
+        tapping.current = false;
+      }, 100)
+      tapping.current = true;
+      lastMousePos = e.touches[0].clientX
+    }
+    mousePosX.current = ("clientX" in e) ? e.clientX : e.touches[0].clientX;
+    clickedMousePos = ("clientX" in e) ? e.clientX : e.touches[0].clientX;
     clickTarget = getTarget(e)
-    console.log("down: ", e.type)
     if (clickTarget != checked.current) {
       uncheck()
     }
     if (clickTarget > 0 && clickTarget < 8) tempChecked = clickTarget
-    if (e.type == "touchstart"){
-      xTouch.current = e.touches[0].clientX;                                      
-      yTouch.current = e.touches[0].clientY;                                      
-      mousePosX.current = e.touches[0].clientX;
-      clickedMousePos = e.touches[0].clientX;
-    }
-    else {
-      mousePosX.current = e.clientX;
-      clickedMousePos = e.clientX;
-    }
   }
   function handleMouseUp(e:any){
-    if (e.type == "mouseup" && (xTouch.current || yTouch.current))
-      {
-        // resetAngle(hoverTarget)
-        // resetAngle(prevHover)
-        // hoverTarget = 0
-        return
-      }
+    if (tapping.current && e.type == "mouseup") return
     const thisCheck:number = getTarget(e)
-    console.log("up: ", e.type)
-    setTimeout(() => {
-      xTouch.current = 0
-      yTouch.current = 0
-    },5)
     if (thisCheck == checked.current) uncheck()
     else if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
       toCheck = e.target.previousElementSibling
@@ -137,36 +123,85 @@ export default function About({turnToCheat}: Props){
         clearTimeout(bgtimer)
         bg.current = "b" + checked.current
         bgOp.current = 1
-        resetAngle(hoverTarget)
-        resetAngle(prevHover)
-        hoverTarget = 0
       }
     }
     if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
     clickTarget = 0;
-    mousePosX.current = e.clientX;
+    mousePosX.current = ("clientX" in e) ? e.clientX : e.changedTouches[0].clientX;
   }
-  
+
   function mouseCoords(e:any){
-    if (e.type == "touchmove"){
-      if(!xTouch.current || !yTouch.current ) return;
-      else{
-        console.log("touch moving", e.type)
-        mousePosX.current = e.touches[0].clientX;
-        mousePosY.current = e.touches[0].clientY;
-      }
-    }
-    else {
-      if (xTouch.current || yTouch.current) return
-      console.log("mouse moving", e.type)
-      mousePosX.current = e.clientX;
-      mousePosY.current = e.clientY;
+    mousePosX.current = ("clientX" in e) ? e.clientX : e.touches[0].clientX;
+    mousePosY.current = ("clientY" in e) ? e.clientY : e.touches[0].clientY;
+    if (!e.sourceCapabilities.firesTouchEvents){
       hoverTarget = getTarget(e);
-      if (hoverTarget > 0 && hoverTarget < 8) startAngle(e, hoverTarget)
-      if (hoverTarget != prevHover) resetAngle(prevHover)
-      prevHover = hoverTarget
+      mouseMove.current = true;
     }
+    else mouseMove.current = false;
   }
+
+  // function handleMouseDown(e:any){
+  //   // if (e.type == "mousedown" && (xTouch.current || yTouch.current)) return
+  //   clickTarget = getTarget(e)
+  //   if (clickTarget != checked.current) {
+  //     uncheck()
+  //   }
+  //   if (clickTarget > 0 && clickTarget < 8) tempChecked = clickTarget
+  //   if (e.type == "touchstart"){
+  //     xTouch.current = e.touches[0].clientX;                                      
+  //     yTouch.current = e.touches[0].clientY;                                      
+  //     mousePosX.current = e.touches[0].clientX;
+  //     clickedMousePos = e.touches[0].clientX;
+  //   }
+  //   else {
+  //     mousePosX.current = e.clientX;
+  //     clickedMousePos = e.clientX;
+  //   }
+  // }
+  // function handleMouseUp(e:any){
+  //   if (e.type == "mouseup" && (xTouch.current || yTouch.current)) return
+  //   const thisCheck:number = getTarget(e)
+  //   setTimeout(() => {
+  //     xTouch.current = 0
+  //     yTouch.current = 0
+  //   },5)
+  //   if (thisCheck == checked.current) uncheck()
+  //   else if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
+  //     toCheck = e.target.previousElementSibling
+  //     if (toCheck) {
+  //       toCheck.checked = true
+  //       checked.current = thisCheck;
+  //       cancelAnimationFrame(lerpReset.current[thisCheck - 1])
+  //       window.requestAnimationFrame(t => lerpUp(t, t, thisCheck, thisCheck))
+  //       clearTimeout(bgtimer)
+  //       bg.current = "b" + checked.current
+  //       bgOp.current = 1
+  //       resetAngle(hoverTarget)
+  //       resetAngle(prevHover)
+  //       hoverTarget = 0
+  //     }
+  //   }
+  //   if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
+  //   clickTarget = 0;
+  //   mousePosX.current = ("clientX" in e) ? e.clientX : e.changedTouches[0].clientX;
+  // }
+  
+  // function mouseCoords(e:any){
+  //   if ("touches" in e){
+  //     // if(!xTouch.current || !yTouch.current ) return;
+  //     mousePosX.current = e.touches[0].clientX;
+  //     mousePosY.current = e.touches[0].clientY;
+  //   }
+  //   else {
+  //     // if (xTouch.current || yTouch.current) return
+  //     mousePosX.current = e.clientX;
+  //     mousePosY.current = e.clientY;
+  //     hoverTarget = getTarget(e);
+  //     if (hoverTarget > 0 && hoverTarget < 8) startAngle(e, hoverTarget)
+  //     if (hoverTarget != prevHover) resetAngle(prevHover)
+  //     prevHover = hoverTarget
+  //   }
+  // }
 
   function getTarget(e:any){
     if (e.target.classList.contains("item")) return 8;
@@ -187,7 +222,7 @@ export default function About({turnToCheat}: Props){
   }
 
   function startAngle(e:any, card:number){
-    if (e.type == "touchmove" || e.type == "touchstart") return
+    if (!mouseMove.current) return
     angleTarget.current = card;
     cancelAnimationFrame(lerpReset.current[card - 1])
     window.requestAnimationFrame(t => {
@@ -196,7 +231,6 @@ export default function About({turnToCheat}: Props){
     });
   }
   function changeAngle(e:any, card:number){
-    if (e.type == "touchmove" || e.type == "touchstart") return
     if (card == angleTarget.current){
       const rect = e.target.getBoundingClientRect();
       const w = rect.width / 2
@@ -271,15 +305,12 @@ export default function About({turnToCheat}: Props){
     } 
   }
 
-  useEffect(() => {
-    if (active.current) requestAnimationFrame(slide)
-  }, [active.current])
   function slide(timeStamp:number){
     if(timeStamp - lastTime > 16) {
       lastTime = timeStamp;
-      const cc:string = "a" + checked.current
       if (clickTarget) speed = (mousePosX.current - lastMousePos) / 2
       else if (checked.current){
+        const cc:string = "a" + checked.current
         if (order[0] == cc || order[1] == cc || order[2] == cc) speed = 5
         else if (order[4] == cc || order[5] == cc || order[6] == cc) speed = -5
         else if (Math.abs(speed) > 2) speed *= 0.8
@@ -315,7 +346,7 @@ export default function About({turnToCheat}: Props){
       setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * posLerp.current[5] * magLerp.current[5])}% ${50 + (posYAdj.current[5] * posLerp.current[5] * magLerp.current[5])}%`})
       setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * posLerp.current[6] * magLerp.current[6])}% ${50 + (posYAdj.current[6] * posLerp.current[6] * magLerp.current[6])}%`})
     }
-    if (active.current) window.requestAnimationFrame(slide);
+    if (turnToCheat == 3) window.requestAnimationFrame(slide);
     lastMousePos = mousePosX.current;
   }
 
@@ -341,7 +372,7 @@ export default function About({turnToCheat}: Props){
     <div id="cont" onDragStart={e => e.preventDefault} onDrop={e => e.preventDefault} style={contStyle}>
       <div className="item a1">
         <input id="a1" type="radio" name="cards" />
-        <div className="c card" style={a1Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 1)} onMouseLeave={e => resetAngle(1)} style={a1Angle}>
           <div className="c cardImage" style={a1Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header1}</h3><p>{desc1}</p></div>
@@ -350,7 +381,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a2">
         <input id="a2" type="radio" name="cards" />
-        <div className="c card" style={a2Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 2)} onMouseLeave={e => resetAngle(2)} style={a2Angle}>
           <div className="c cardImage" style={a2Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header2}</h3><p>{desc2}</p></div>
@@ -359,7 +390,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a3">
         <input id="a3" type="radio" name="cards" />
-        <div className="c card" style={a3Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 3)} onMouseLeave={e => resetAngle(3)} style={a3Angle}>
           <div className="c cardImage" style={a3Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header3}</h3><p>{desc3}</p></div>
@@ -368,7 +399,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a4">
         <input id="a4" type="radio" name="cards" />
-        <div className="c card" style={a4Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 4)} onMouseLeave={e => resetAngle(4)} style={a4Angle}>
           <div className="c cardImage" style={a4Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header4}</h3><p>{desc4}</p></div>
@@ -377,7 +408,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a5">
         <input id="a5" type="radio" name="cards" />
-        <div className="c card" style={a5Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 5)} onMouseLeave={e => resetAngle(5)} style={a5Angle}>
           <div className="c cardImage" style={a5Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header5}</h3><p>{desc5}</p></div>
@@ -386,7 +417,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a6">
         <input id="a6" type="radio" name="cards" />
-        <div className="c card" style={a6Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 6)} onMouseLeave={e => resetAngle(6)} style={a6Angle}>
           <div className="c cardImage" style={a6Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header6}</h3><p>{desc6}</p></div>
@@ -395,7 +426,7 @@ export default function About({turnToCheat}: Props){
       </div>
       <div className="item a7">
         <input id="a7" type="radio" name="cards" />
-        <div className="c card" style={a7Angle}>
+        <div className="c card" onClick={e => e.preventDefault} onMouseEnter={e => startAngle(e, 7)} onMouseLeave={e => resetAngle(7)} style={a7Angle}>
           <div className="c cardImage" style={a7Pos}></div>
           <div className="c cardDesc">
             <div className="c h3"><h3>{header7}</h3><p>{desc7}</p></div>

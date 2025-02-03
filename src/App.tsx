@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './components/CSS/App.css';
 import Splash from './components/Splash'
 import About from './components/About';
