@@ -30,12 +30,20 @@ export default function Contact({turnToCheat}: Props){
   const yTouch = useRef<number>(0);
 
   useEffect(() => {
-    console.log(turnToCheat)
     if(turnToCheat == 0) {
-      active.current = true;
-      requestAnimationFrame((now) => animate(now))
-      window.addEventListener('touchstart', handleTouchStart, false);        
-      window.addEventListener('touchmove', handleTouchMove, false);
+      const onPageLoad = () => {
+        active.current = true;
+        requestAnimationFrame((now) => animate(now))
+        window.addEventListener('touchstart', handleTouchStart, false);        
+        window.addEventListener('touchmove', handleTouchMove, false);
+      }
+      if (document.readyState === 'complete') {
+        onPageLoad();
+      } else {
+        window.addEventListener('load', onPageLoad, false);
+        // Remove the event listener when component unmounts
+        return () => window.removeEventListener('load', onPageLoad);
+      }
     }
     else {
       active.current = false;
@@ -201,7 +209,6 @@ export default function Contact({turnToCheat}: Props){
         }
       }
     }
-    console.log("animating leaves", turnToCheat)
     if (active.current) setTimeout(() => requestAnimationFrame((now) => animate(now)), 16)
   }
 

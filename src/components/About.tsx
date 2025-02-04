@@ -8,6 +8,7 @@ export default function About({turnToCheat}: Props){
 
   // const [squish, setSquish] = useState<number>(1);
   // const [order, setOrder] = useState<string[]>(["a1", "a2", "a3", "a4", "a5", "a6", "a7"]);
+  const active = useRef<boolean>(false);
   let squish:number = 1;
   let order:string[] = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
   let speed:number = 1;
@@ -60,6 +61,7 @@ export default function About({turnToCheat}: Props){
 
   useEffect(() => {
     if (turnToCheat == 3){
+      active.current = true;
       requestAnimationFrame(slide)
       window.addEventListener('mousemove', mouseCoords, false); // This needs some serious work for mobile devices.
       // window.addEventListener('mousedown', handleMouseDown);
@@ -75,6 +77,7 @@ export default function About({turnToCheat}: Props){
       window.addEventListener('touchend', handleMouseUp, false);
     }
     else{
+      active.current = false;
       window.removeEventListener('mousemove', mouseCoords, false);
       window.removeEventListener('mousedown', handleMouseDown, false);
       window.removeEventListener('mouseup', handleMouseUp, false);
@@ -346,7 +349,7 @@ export default function About({turnToCheat}: Props){
       setA6Pos({backgroundPosition: `${seventh * (7 - parseInt(order[1].substring(1))) + squeventh + (posXAdj.current[5] * posLerp.current[5] * magLerp.current[5])}% ${50 + (posYAdj.current[5] * posLerp.current[5] * magLerp.current[5])}%`})
       setA7Pos({backgroundPosition: `${seventh * (7 - parseInt(order[0].substring(1))) + squeventh + (posXAdj.current[6] * posLerp.current[6] * magLerp.current[6])}% ${50 + (posYAdj.current[6] * posLerp.current[6] * magLerp.current[6])}%`})
     }
-    if (turnToCheat == 3) window.requestAnimationFrame(slide);
+    if (active.current) window.requestAnimationFrame(slide);
     lastMousePos = mousePosX.current;
   }
 
