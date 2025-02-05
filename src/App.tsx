@@ -18,7 +18,6 @@ function App() {
   return (
     <div className="App">
       <Splash>
-        <>
           <Hello />
           <Tabs buttonWidth={buttonWidth} buttonOpacity={buttonOpacity} turnToCheat={turnToCheat} setTurnToCheat={setTurnToCheat} names={["About", "Projects", "Work", "Contact"]}>
             <Contact turnToCheat={turnToCheat} />
@@ -28,7 +27,6 @@ function App() {
           </Tabs>
 
           <Menu buttonWidth={buttonWidth} setButtonWidth={setButtonWidth} buttonOpacity={buttonOpacity} setButtonOpacity={setButtonOpacity} setTurnToCheat={setTurnToCheat}/>
-        </>
       </Splash>
     </div>
   );

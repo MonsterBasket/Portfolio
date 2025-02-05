@@ -5,14 +5,8 @@ type Props = {turnToCheat: number;}
 
 export default function Contact({turnToCheat}: Props){
 
-  const active = useRef<boolean>(true);
-  const [delay, setDelay] = useState<number>(0)
+  const active = useRef<boolean>(false);
   const lastRender = useRef<number>(0)
-  const sway = useRef<number>(0.5);
-  const lastmousePos = useRef<number>(0);
-  const mousePos = useRef<number>(0);
-  const swayMod = useRef<number>(0)
-  const swayModDirection = useRef<number>(0)
   const [renderLeaves, setRenderLeaves] = useState<ReactElement[]>([])
   const leafClasses:string[] = ["leaf", "blossom"]
   const leafMoves:string[] = ["leafSway1", "leafSway2", "leafSway3"]
@@ -29,21 +23,27 @@ export default function Contact({turnToCheat}: Props){
   const xTouch = useRef<number>(0);
   const yTouch = useRef<number>(0);
 
+  // useEffect(() => {
+  //   const onPageLoad = () => {
+  //     active.current = true;
+  //     requestAnimationFrame((now) => animate(now))
+  //     window.addEventListener('touchstart', handleTouchStart, false);        
+  //     window.addEventListener('touchmove', handleTouchMove, false);
+  //   }
+  //   if(turnToCheat == 0) {
+  //     if (document.readyState === 'complete') {
+  //       onPageLoad();
+  //     } else {
+  //       window.addEventListener('load', onPageLoad, false);
+  //       // Remove the event listener when component unmounts
+  //       return () => window.removeEventListener('load', onPageLoad);
+  //     }
+  //   }
   useEffect(() => {
-    if(turnToCheat == 0) {
-      const onPageLoad = () => {
-        active.current = true;
-        requestAnimationFrame((now) => animate(now))
-        window.addEventListener('touchstart', handleTouchStart, false);        
-        window.addEventListener('touchmove', handleTouchMove, false);
-      }
-      if (document.readyState === 'complete') {
-        onPageLoad();
-      } else {
-        window.addEventListener('load', onPageLoad, false);
-        // Remove the event listener when component unmounts
-        return () => window.removeEventListener('load', onPageLoad);
-      }
+    if (turnToCheat == 0){
+      active.current = true;
+      window.addEventListener('touchstart', handleTouchStart, false);
+      window.addEventListener('touchmove', handleTouchMove, false);
     }
     else {
       active.current = false;
@@ -76,8 +76,10 @@ export default function Contact({turnToCheat}: Props){
 
 
   useEffect(() => {
-    makeLeaves()
     document.documentElement.style.setProperty('--scrollbar-width', (window.innerWidth - document.documentElement.clientWidth) + "px");
+    makeLeaves()
+    active.current = true;
+    requestAnimationFrame((now) => animate(now))
   }, [])
 
   function handleTouchStart(e:any) {
@@ -184,25 +186,12 @@ export default function Contact({turnToCheat}: Props){
       if (Math.abs(gustSpeed.current) > 3 && gustTarget.current) gustTarget.current = 0; 
       else if (Math.abs(gustSpeed.current) > 0.005) gustSpeed.current *= 0.95
       else gustSpeed.current = 0
-      // let speed = (mousePos.current - lastmousePos.current) / deltaTime / 1000
-      let tempSway = sway.current * 0.95
-      let tempSwayMod = swayMod.current
-      // tempSway -= speed;
-      if (swayModDirection.current) tempSwayMod += 0.001 * (tempSway + 1.5)
-      else tempSwayMod -= 0.001 * (tempSway + 1.5)
-      if (tempSwayMod >= 0.1) swayModDirection.current = 0;
-      if (tempSwayMod <= 0) swayModDirection.current = 1;
-      let gust = Math.min(Math.max(gustSpeed.current + tempSway, -0.43), 0.43)
-      tempSway = Math.min(Math.max(tempSway, -0.43), 0.43)
-      setDelay(gust - 0.5 + (tempSwayMod - 0.05))
-      sway.current = tempSway
-      swayMod.current = tempSwayMod
-      // lastmousePos.current = mousePos.current;
-      for (let i = 0; i < renderLeaves.length; i++) {
+      console.log(renderLeaves.length)
+      for (let i = 0; i < 60; i++) {
         let myLeaf = document.getElementById(`leaf${i}`)
         if (myLeaf) {
           let left = parseFloat(myLeaf.style.left.substring(0, myLeaf.style.left.length - 1))
-          let leftMove = left - ((tempSway + gustSpeed.current) * 2 * (parseFloat(myLeaf.style.zIndex + i / 10) / 30)) // i / 10 gives it a "random" but constant multiplier for each leaf
+          let leftMove = left - (gustSpeed.current * 2 * (parseFloat(myLeaf.style.zIndex + i / 10) / 30)) // i / 10 gives it a "random" but constant multiplier for each leaf
           if (leftMove > 100) leftMove -= 105
           if (leftMove < -5) leftMove += 105
           myLeaf.style.left = `${leftMove}%`
@@ -244,7 +233,6 @@ export default function Contact({turnToCheat}: Props){
       <div className="textTop"></div>
     </div>
     <div className="treeEffects">
-      {/* <div className="tree" style={{animationDelay: delay+"s"}}></div> */}
       {renderLeaves}
     </div>
   </section>
