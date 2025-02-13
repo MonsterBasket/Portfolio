@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "./CSS/about.css"
-import { click } from "@testing-library/user-event/dist/click";
 
 type Props = {turnToCheat: number;}
 
@@ -142,69 +141,6 @@ export default function About({turnToCheat}: Props){
     }
     else mouseMove.current = false;
   }
-
-  // function handleMouseDown(e:any){
-  //   // if (e.type == "mousedown" && (xTouch.current || yTouch.current)) return
-  //   clickTarget = getTarget(e)
-  //   if (clickTarget != checked.current) {
-  //     uncheck()
-  //   }
-  //   if (clickTarget > 0 && clickTarget < 8) tempChecked = clickTarget
-  //   if (e.type == "touchstart"){
-  //     xTouch.current = e.touches[0].clientX;                                      
-  //     yTouch.current = e.touches[0].clientY;                                      
-  //     mousePosX.current = e.touches[0].clientX;
-  //     clickedMousePos = e.touches[0].clientX;
-  //   }
-  //   else {
-  //     mousePosX.current = e.clientX;
-  //     clickedMousePos = e.clientX;
-  //   }
-  // }
-  // function handleMouseUp(e:any){
-  //   if (e.type == "mouseup" && (xTouch.current || yTouch.current)) return
-  //   const thisCheck:number = getTarget(e)
-  //   setTimeout(() => {
-  //     xTouch.current = 0
-  //     yTouch.current = 0
-  //   },5)
-  //   if (thisCheck == checked.current) uncheck()
-  //   else if (thisCheck == tempChecked && Math.abs(mousePosX.current - clickedMousePos) < 15){
-  //     toCheck = e.target.previousElementSibling
-  //     if (toCheck) {
-  //       toCheck.checked = true
-  //       checked.current = thisCheck;
-  //       cancelAnimationFrame(lerpReset.current[thisCheck - 1])
-  //       window.requestAnimationFrame(t => lerpUp(t, t, thisCheck, thisCheck))
-  //       clearTimeout(bgtimer)
-  //       bg.current = "b" + checked.current
-  //       bgOp.current = 1
-  //       resetAngle(hoverTarget)
-  //       resetAngle(prevHover)
-  //       hoverTarget = 0
-  //     }
-  //   }
-  //   if (Math.abs(mousePosX.current - clickedMousePos) > 30) uncheck()
-  //   clickTarget = 0;
-  //   mousePosX.current = ("clientX" in e) ? e.clientX : e.changedTouches[0].clientX;
-  // }
-  
-  // function mouseCoords(e:any){
-  //   if ("touches" in e){
-  //     // if(!xTouch.current || !yTouch.current ) return;
-  //     mousePosX.current = e.touches[0].clientX;
-  //     mousePosY.current = e.touches[0].clientY;
-  //   }
-  //   else {
-  //     // if (xTouch.current || yTouch.current) return
-  //     mousePosX.current = e.clientX;
-  //     mousePosY.current = e.clientY;
-  //     hoverTarget = getTarget(e);
-  //     if (hoverTarget > 0 && hoverTarget < 8) startAngle(e, hoverTarget)
-  //     if (hoverTarget != prevHover) resetAngle(prevHover)
-  //     prevHover = hoverTarget
-  //   }
-  // }
 
   function getTarget(e:any){
     if (e.target.classList.contains("item")) return 8;

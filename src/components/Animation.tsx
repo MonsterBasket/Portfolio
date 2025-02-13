@@ -1,19 +1,65 @@
 import './CSS/animation.css'
 import disclaimerImg from '../images/disclaimer.png';
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { DOMElement, ReactElement, useEffect, useRef, useState } from 'react';
+import { forEachChild } from 'typescript';
 
 type Props = {turnToCheat: number;}
 
 export default function Animation({turnToCheat}: Props){
-  const active = useRef<boolean>(false)
+  const xTouch = useRef<number>(0);
+  const yTouch = useRef<number>(0);
 
-  const [pagePos, setPagePos] = useState<string[]>(["front","frontRight","backRight","back","backLeft","frontLeft"])
-  const [descPos, setDescPos] = useState<string[]>(["frontD","frontRightD","backRightD","backD","backLeftD","frontLeftD"])
+  const pagePos = useRef<string[]>(["front","frontRight","backRight","back","backLeft","frontLeft"])
+  const descPos = useRef<string[]>(["frontD","frontRightD","backRightD","backD","backLeftD","frontLeftD"])
+  const [,rerender] = useState<string[]>([])
 
   useEffect(() => {
-    if(turnToCheat == 2) active.current = true
-    else active.current = false;
+    if(turnToCheat == 2) {
+      window.addEventListener('touchstart', handleTouchStart, false);
+      window.addEventListener('touchmove', handleTouchMove, false);
+    }
+    else {
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+    }
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart, false);        
+      window.removeEventListener('touchmove', handleTouchMove, false);
+    };  
   }, [turnToCheat])
+
+  function handleTouchStart(e:any) {
+    xTouch.current = e.touches[0].clientX;                                      
+    yTouch.current = e.touches[0].clientY; 
+  }
+                                                                          
+  function handleTouchMove(e:any) {
+    if ( !xTouch.current || !yTouch.current ) return;
+    const xUp = e.touches[0].clientX;                                    
+    const yUp = e.touches[0].clientY;
+    const xDiff = xTouch.current - xUp;
+    const yDiff = yTouch.current - yUp;
+                                                                        
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+      if ( xDiff > 0 ) {
+        /* right swipe */ 
+        move(-1)
+      } else {
+        /* left swipe */
+        move(1)
+      }                       
+    } else {
+      if ( yDiff > 0 ) {
+        /* down swipe */ 
+      } else { 
+        /* up swipe */
+      }                                                                 
+    }
+    /* reset values */
+    xTouch.current = 0;
+    yTouch.current = 0;
+    return false;
+  }
 
   function move(direction:number){
     function num(i:number){
@@ -22,8 +68,9 @@ export default function Animation({turnToCheat}: Props){
       if (i < 0) i += 6
       return i
     }
-    setPagePos([pagePos[num(0)], pagePos[num(1)], pagePos[num(2)], pagePos[num(3)], pagePos[num(4)], pagePos[num(5)]])
-    setDescPos([descPos[num(0)], descPos[num(1)], descPos[num(2)], descPos[num(3)], descPos[num(4)], descPos[num(5)]])
+    pagePos.current = [pagePos.current[num(0)], pagePos.current[num(1)], pagePos.current[num(2)], pagePos.current[num(3)], pagePos.current[num(4)], pagePos.current[num(5)]]
+    descPos.current = [descPos.current[num(0)], descPos.current[num(1)], descPos.current[num(2)], descPos.current[num(3)], descPos.current[num(4)], descPos.current[num(5)]]
+    rerender([])
   }
   const alleyUrl:string = "https://player.vimeo.com/video/5008288?h=22815a5165"
   const cookiesUrl:string = "https://www.youtube.com/embed/XRhsOcLPqiQ?si=wbU0P8G8_0sTDUb6"  
@@ -36,7 +83,7 @@ export default function Animation({turnToCheat}: Props){
   const cookies:ReactElement = <iframe width="100%" height="100%" src={cookiesUrl} title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
   const cookiesDesc:ReactElement = <span><h3>Cookies</h3>Flash animation that I had a lot of fun with. I lost the original render and the blurred animations (smoke, bird, trees) rendered as static in this one.</span>
   const mattePainting:ReactElement = <iframe width="100%" height="100%" src={matteUrl} title="YouTube video player" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
-  const mattePaintingDesc:string = "A matte painting, cutting out trees is hard!"
+  const mattePaintingDesc:string = "Animated matte painting, cutting out trees is hard!"
   const showreel:ReactElement = <iframe title="Showreel - James Blaskett 2011" src={showreelUrl} width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture"></iframe>
   const showreelDesc:string = "A compilation showing many of my works from uni after I graduated in 2011"
   const gears:ReactElement = <iframe width="100%" height="100%" src={gearsUrl} title="Dynamic Gears" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
@@ -51,12 +98,12 @@ export default function Animation({turnToCheat}: Props){
 
   return <section id="Animation">
     <article>
-      <article className={`animation ${pagePos[0]}`}>{disclaimer}</article>
-      <article className={`animation ${pagePos[1]}`}>{gears}</article>
-      <article className={`animation ${pagePos[2]}`}>{cookies}</article>
-      <article className={`animation ${pagePos[3]}`}>{alley}</article>
-      <article className={`animation ${pagePos[4]}`}>{showreel}</article>
-      <article className={`animation ${pagePos[5]}`}>{hair}</article>
+      <article className={`animation ${pagePos.current[0]}`}>{mattePainting}</article>
+      <article className={`animation ${pagePos.current[1]}`}>{gears}</article>
+      <article className={`animation ${pagePos.current[2]}`}>{cookies}</article>
+      <article className={`animation ${pagePos.current[3]}`}>{alley}</article>
+      <article className={`animation ${pagePos.current[4]}`}>{showreel}</article>
+      <article className={`animation ${pagePos.current[5]}`}>{hair}</article>
       <div onClick={()=> move(1)} className="frontLeft ontop"></div>
       <div onClick={()=> move(-1)} className="frontRight ontop"></div>
       <div onClick={()=> move(2)} className="backLeft ontop"></div>
@@ -70,12 +117,12 @@ export default function Animation({turnToCheat}: Props){
       </div>
     </article>
     <div className="descContainer">
-      <div className={`${descPos[0]}`}>{disclaimerDesc}</div>
-      <div className={`${descPos[1]}`}>{gearsDesc}</div>
-      <div className={`${descPos[2]}`}>{cookiesDesc}</div>
-      <div className={`${descPos[3]}`}>{alleyDesc}</div>
-      <div className={`${descPos[4]}`}>{showreelDesc}</div>
-      <div className={`${descPos[5]}`}>{hairDesc}</div>
+      <div className={`${descPos.current[0]}`}>{mattePaintingDesc}</div>
+      <div className={`${descPos.current[1]}`}>{gearsDesc}</div>
+      <div className={`${descPos.current[2]}`}>{cookiesDesc}</div>
+      <div className={`${descPos.current[3]}`}>{alleyDesc}</div>
+      <div className={`${descPos.current[4]}`}>{showreelDesc}</div>
+      <div className={`${descPos.current[5]}`}>{hairDesc}</div>
     </div>
   </section>
 }

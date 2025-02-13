@@ -21,6 +21,9 @@
               linear-gradient(270deg, #8e7d69 0%, #8e7d6900 20%);
   pointer-events: none;
 }
+.noScroll{
+  touch-action: none;
+}
 .projTop{
   height: 50%;
   /* background-color: red; */
@@ -39,10 +42,10 @@
   left: 50%;
   /* background-color: blue; */
 }
-.projTop, .projBottom{
+.projTop, .projBottom, .projTopTouch{
   --size: min(calc(45vh - 25px), 90vw);
 }
-.projLeft, .projRight{
+.projLeft, .projRight, .projLeftTouch{
   --size: min(45vw, 70vh);
 }
 .project, .projDesc{

@@ -23,25 +23,10 @@ export default function Contact({turnToCheat}: Props){
   const xTouch = useRef<number>(0);
   const yTouch = useRef<number>(0);
 
-  // useEffect(() => {
-  //   const onPageLoad = () => {
-  //     active.current = true;
-  //     requestAnimationFrame((now) => animate(now))
-  //     window.addEventListener('touchstart', handleTouchStart, false);        
-  //     window.addEventListener('touchmove', handleTouchMove, false);
-  //   }
-  //   if(turnToCheat == 0) {
-  //     if (document.readyState === 'complete') {
-  //       onPageLoad();
-  //     } else {
-  //       window.addEventListener('load', onPageLoad, false);
-  //       // Remove the event listener when component unmounts
-  //       return () => window.removeEventListener('load', onPageLoad);
-  //     }
-  //   }
   useEffect(() => {
     if (turnToCheat == 0){
       active.current = true;
+      requestAnimationFrame((now) => animate(now))
       window.addEventListener('touchstart', handleTouchStart, false);
       window.addEventListener('touchmove', handleTouchMove, false);
     }
@@ -56,25 +41,6 @@ export default function Contact({turnToCheat}: Props){
     };  
   }, [turnToCheat])
                                                                            
-  // useEffect(() => {
-  //   // callback function to call when event triggers
-  //   const onPageLoad = () => {
-  //     makeLeaves()
-  //     active.current = true;
-  //     requestAnimationFrame((now) => animate(now))
-  //   };
-
-  //   // Check if the page has already loaded
-  //   if (document.readyState === 'complete') {
-  //     onPageLoad();
-  //   } else {
-  //     window.addEventListener('load', onPageLoad, false);
-  //     // Remove the event listener when component unmounts
-  //     return () => window.removeEventListener('load', onPageLoad);
-  //   }
-  // }, []);
-
-
   useEffect(() => {
     document.documentElement.style.setProperty('--scrollbar-width', (window.innerWidth - document.documentElement.clientWidth) + "px");
     makeLeaves()
@@ -186,7 +152,6 @@ export default function Contact({turnToCheat}: Props){
       if (Math.abs(gustSpeed.current) > 3 && gustTarget.current) gustTarget.current = 0; 
       else if (Math.abs(gustSpeed.current) > 0.005) gustSpeed.current *= 0.95
       else gustSpeed.current = 0
-      console.log(renderLeaves.length)
       for (let i = 0; i < 60; i++) {
         let myLeaf = document.getElementById(`leaf${i}`)
         if (myLeaf) {
