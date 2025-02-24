@@ -41,7 +41,7 @@ function Word({right, left, active}: Props) {
 
   function explode() {
     const word = left + right
-    right = ""
+    //right = ""
     left = ""
 
     for (let i = 0; i < word.length; i++) {
@@ -123,12 +123,13 @@ export default function Typing({active}: Props2){
 
   // interface firsts { [index: string]: string }
   // const first:firsts = {}
-  interface words { [index: string]: ReactElement }
-  const [words, setWords] = useState<words>({})
+  //interface words { [index: string]: ReactElement }
+  //const [words, setWords] = useState<words>({})
 
   useEffect(() => {
-    window.addEventListener("keydown", typing, true)
-    return window.removeEventListener("keydown", typing)
+    window.addEventListener("keydown", typing, false)
+    //return window.removeEventListener("keydown", typing, false) // matching the true/false actually breaks the event listener
+    // The above should be a nevesary cleanup, but it's causing a memory leak, and works MUCH better removed.
   },[])
 
   useEffect(() => {
@@ -138,7 +139,6 @@ export default function Typing({active}: Props2){
     }
   }, [])
   function createWord() { 
-    // console.log(Object.keys(keys))
     let newIndex = Math.floor(Math.random() * (allWords.length - 1))
     while (allWords[newIndex].charAt(0) in keys){
       newIndex += 1
@@ -152,24 +152,25 @@ export default function Typing({active}: Props2){
     rerender([])
     // /*
     setTimeout(() => createWord(), 2000); // new word every 2 seconds
-      setTimeout(function(a){
-        if (a in keys) {
-          if (keys[a].right === "") return
-          let newKeys = keys
-          newKeys[a].left += newKeys[a].right
-          newKeys[a].right = ""
-          newKeys[a].key = uuid()
-          setKeys(newKeys)
-          rerender([])
-  
-          setTimeout((a) => delete keys[a], 2000, a) // This is how long the explosion animation lasts
-          if (target === a) target = null
-        }
-      }, 4000, newWord.charAt(0)); // destroy after 4 seconds and then remove elements after 2 seconds (setTimeout above)
+    setTimeout(function(a){
+      if (a in keys) {
+        if (keys[a].right === "") return
+        let newKeys = keys
+        newKeys[a].left += newKeys[a].right
+        newKeys[a].right = ""
+        newKeys[a].key = uuid()
+        setKeys(newKeys)
+        rerender([])
+
+        setTimeout((a) => delete keys[a], 2000, a) // This is how long the explosion animation lasts
+        if (target === a) target = null
+      }
+    }, 4000, newWord.charAt(0)); // destroy after 4 seconds and then remove elements after 2 seconds (setTimeout above)
     // */
   }
 
   function typing(e:any){
+    console.log(e)
     if(e.keyCode === 32) { //spacebar - this prevents page scroll when space is pressed
       e.preventDefault();
     }
